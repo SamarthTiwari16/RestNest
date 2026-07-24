@@ -41,6 +41,11 @@ public class GlobalExceptionHandler {
         return response(HttpStatus.NOT_FOUND, "NOT_FOUND", exception.getMessage(), request);
     }
 
+    @ExceptionHandler(UnauthorizedActionException.class)
+    ResponseEntity<ApiError> handleUnauthorizedAction(UnauthorizedActionException exception, HttpServletRequest request) {
+        return response(HttpStatus.FORBIDDEN, "FORBIDDEN", exception.getMessage(), request);
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     ResponseEntity<ApiError> handleBadCredentials(BadCredentialsException exception, HttpServletRequest request) {
         return response(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "Invalid email or password", request);

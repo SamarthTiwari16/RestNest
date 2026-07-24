@@ -14,12 +14,12 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 ---
 
 ## 2. Current Project Status
-- **Current Phase:** Phase 0 (Completed & Verified)
-- **Next Phase:** Phase 1 (Authentication & User Management)
+- **Current Phase:** Phase 2 (Completed & Verified)
+- **Next Phase:** Phase 3 (Image Upload)
 - **Local Databases:** 
   - MySQL database `rentnest` created.
   - User `rentnest_app` created with password `change-me` and full privileges on `rentnest` schema.
-  - Flyway migration history table initialized and `V1__create_users.sql` applied.
+  - Flyway migrations applied up to `V2__create_properties.sql`.
 
 ---
 
@@ -27,25 +27,26 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 
 ### Phase 0 — Project Setup (Completed & Verified)
 - **Goals Met:** Empty-but-running skeleton for backend and frontend.
-- **Key Actions & Fixes:**
-  - Initialized Spring Boot backend (running on `localhost:8080`).
-  - Initialized React + Vite frontend (running on `localhost:5173`).
-  - Fixed `AuthControllerTest` and `UserControllerTest` configuration by properly importing `SecurityConfig.class` and `JwtAuthenticationFilter.class` to fix the `401 Unauthorized` issues.
-  - Whitelisted `/swagger-ui.html` in `SecurityConfig.java` to prevent 401s on Swagger UI redirects.
-  - Verified local database connection and Flyway migration execution.
-  - Verified UI rendering via browser subagent screenshot validation.
+- **Key Actions:** Setup Maven/React skeletons, fixed test config and whitelisted Swagger UI entrypoints.
+
+### Phase 1 — Authentication & User Management (Completed & Verified)
+- **Goals Met:** Users register and log in securely.
+- **Key Actions:** Created User entity, AuthController REST endpoints, exception handlers, Spring Security JWT filter chain, session storage provider, and React registration/login pages. Tested via JUnit/Mockito and browser integration session.
+
+### Phase 2 — Property Listing Core (Completed & Verified)
+- **Goals Met:** Property listing CRUD and state transitions.
+- **Key Actions:** Created V2 properties migration, Property entity, Repository, Service (validating state machine), REST Controller, JUnit/Mockito tests, and React CreateListing form/MyListings dashboard.
 
 ---
 
 ## 4. Next Phase Details
 
-### Phase 1 — Authentication & User Management (Ready to Start)
-- **Goal:** Users can register and log in securely.
+### Phase 3 — Image Upload (Ready to Start)
+- **Goal:** Listings support multiple images stored outside the database.
 - **Tasks:**
-  - Map `User` entity to the `users` table + Flyway migration verification.
-  - Create registration endpoint with bean validation (unique email, strong password, valid phone).
-  - Create login endpoint issuing a short-lived JWT.
-  - Implement Spring Security filter chain processing (JWT verification, BCrypt password encoding).
-  - Build frontend registration/login pages, configure `AuthContext`, and add an Axios interceptor for JWT attachments.
-  - Add a basic global exception handler (`ResourceNotFoundException`, `ValidationException`).
-  - Implement unit tests for `AuthService` (registration validations, password hashing, duplicate check).
+  - Create `PropertyImage` entity and schema migration.
+  - Build `ImageStorageService` saving to local disk (behind an interface for future S3 integration).
+  - Create upload endpoint (multipart) returning stored URLs.
+  - Add file-type validation (jpg/png/webp), max size checks, and require at least 1 image before verification submission.
+  - Build frontend image uploader with preview and reordering support in the listing form.
+

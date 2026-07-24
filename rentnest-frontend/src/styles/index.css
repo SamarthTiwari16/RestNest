@@ -23,3 +23,186 @@ dt { color: var(--fog); font-size: .78rem; margin-bottom: .2rem; text-transform:
 dd { margin: 0; }
 .loading { color: var(--parchment); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+
+/* Phase 2 layout and utility styles */
+.navbar {
+  background: var(--ink);
+  color: var(--parchment);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgb(201 162 74 / 20%);
+}
+.navbar h1 {
+  font-size: 1.5rem;
+  color: var(--parchment);
+}
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+.nav-link {
+  color: var(--parchment);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-link:hover {
+  color: var(--gold-thread);
+}
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--charcoal);
+  color: var(--charcoal);
+}
+.btn-secondary:hover {
+  background: var(--parchment);
+}
+.btn-danger {
+  background: #8b2d20;
+  color: var(--paper-white);
+}
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2.5rem 1rem;
+}
+.page-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.listing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+.listing-card {
+  background: var(--paper-white);
+  border: 1px solid rgb(138 130 114 / 18%);
+  box-shadow: 2px 2px 0 rgb(21 19 15 / 8%);
+  padding: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.listing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 rgb(21 19 15 / 12%);
+}
+.listing-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+.listing-card-title {
+  font-family: Fraunces, serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0;
+}
+.listing-price {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--clay);
+}
+.listing-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--fog);
+  margin-bottom: 1.5rem;
+}
+.listing-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-draft {
+  background: rgb(138 130 114 / 15%);
+  color: var(--charcoal);
+}
+.badge-pending {
+  background: var(--parchment);
+  color: var(--fog);
+  border: 1px solid rgb(138 130 114 / 30%);
+}
+.badge-active {
+  background: rgb(95 107 78 / 12%);
+  color: var(--sage);
+}
+.badge-rented {
+  background: rgb(21 19 15 / 8%);
+  color: var(--fog);
+  text-decoration: line-through;
+}
+.badge-archived {
+  background: rgb(21 19 15 / 15%);
+  color: var(--fog);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.form-card {
+  background: var(--paper-white);
+  border: 1px solid rgb(138 130 114 / 18%);
+  box-shadow: 2px 2px 0 rgb(21 19 15 / 12%);
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 2.5rem;
+}
+.checkbox-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.checkbox-label input {
+  cursor: pointer;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+select {
+  background: var(--paper-white);
+  border: 1px solid rgb(138 130 114 / 55%);
+  border-radius: 6px;
+  color: var(--charcoal);
+  padding: .72rem;
+  font: inherit;
+}
+select:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 2px;
+}
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--paper-white);
+  border: 1px dashed rgb(138 130 114 / 35%);
+  border-radius: 8px;
+}
+.empty-state p {
+  color: var(--fog);
+  font-size: 1.1rem;
+}
+
