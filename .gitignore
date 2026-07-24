@@ -1,0 +1,19 @@
+# Java
+rentnest-backend/target/
+*.class
+
+# Node
+rentnest-frontend/node_modules/
+rentnest-frontend/dist/
+
+# Environment and IDE files
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
