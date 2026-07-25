@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "properties")
@@ -54,6 +56,10 @@ public class Property {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("sortOrder ASC")
+    private List<PropertyImage> images = new ArrayList<>();
+
     protected Property() {
     }
 
@@ -93,6 +99,7 @@ public class Property {
     public LocalDate getAvailableFrom() { return availableFrom; }
     public PropertyStatus getStatus() { return status; }
     public Instant getCreatedAt() { return createdAt; }
+    public List<PropertyImage> getImages() { return images; }
 
     public void setOwner(User owner) { this.owner = owner; }
     public void setTitle(String title) { this.title = title; }
@@ -106,4 +113,5 @@ public class Property {
     public void setParking(Boolean parking) { this.parking = parking; }
     public void setAvailableFrom(LocalDate availableFrom) { this.availableFrom = availableFrom; }
     public void setStatus(PropertyStatus status) { this.status = status; }
+    public void setImages(List<PropertyImage> images) { this.images = images; }
 }

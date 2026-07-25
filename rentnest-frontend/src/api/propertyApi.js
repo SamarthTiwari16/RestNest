@@ -27,3 +27,13 @@ export function markAsRented(id) {
 export function withdrawProperty(id) {
   return axiosClient.post(`/properties/${id}/withdraw`);
 }
+
+export function uploadImage(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  return axiosClient.post('/properties/images/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+}

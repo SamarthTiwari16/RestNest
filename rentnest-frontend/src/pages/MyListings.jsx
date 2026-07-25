@@ -76,13 +76,21 @@ export default function MyListings({ onCreateNew, onEdit }) {
           </div>
         ) : (
           <div className="listing-grid">
-            {listings.map((item) => (
-              <div key={item.id} className="listing-card">
-                <div>
-                  <div className="listing-card-header">
-                    <h3 className="listing-card-title">{item.title}</h3>
-                    <span className={getStatusBadgeClass(item.status)}>{item.status.replace('_', ' ')}</span>
-                  </div>
+            {listings.map((item) => {
+              const coverImage = item.images && item.images.length > 0 ? item.images[0].imageUrl : null;
+              const fullCoverUrl = coverImage ? (coverImage.startsWith('/') ? `http://localhost:8080${coverImage}` : coverImage) : null;
+              return (
+                <div key={item.id} className="listing-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    {fullCoverUrl && (
+                      <div className="listing-card-banner" style={{ width: '100%', height: '140px', overflow: 'hidden', borderRadius: '4px', marginBottom: '0.8rem' }}>
+                        <img src={fullCoverUrl} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    )}
+                    <div className="listing-card-header">
+                      <h3 className="listing-card-title">{item.title}</h3>
+                      <span className={getStatusBadgeClass(item.status)}>{item.status.replace('_', ' ')}</span>
+                    </div>
                   <p className="listing-price">₹{item.rent.toLocaleString('en-IN')} / month</p>
                   <p style={{ margin: '0.5rem 0', color: 'var(--charcoal)', fontWeight: 500 }}>
                     {item.locality}, {item.city}
@@ -140,7 +148,7 @@ export default function MyListings({ onCreateNew, onEdit }) {
                   )}
                 </div>
               </div>
-            ))}
+            ); })}
           </div>
         )}
       </main>

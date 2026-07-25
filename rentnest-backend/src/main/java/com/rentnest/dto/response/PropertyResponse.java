@@ -5,6 +5,8 @@ import com.rentnest.entity.PropertyStatus;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public record PropertyResponse(
         Long id,
@@ -20,9 +22,16 @@ public record PropertyResponse(
         Boolean parking,
         LocalDate availableFrom,
         PropertyStatus status,
-        Instant createdAt
+        Instant createdAt,
+        List<PropertyImageResponse> images
 ) {
+    public record PropertyImageResponse(Long id, String imageUrl, Integer sortOrder) {}
+
     public static PropertyResponse from(Property property) {
+        List<PropertyImageResponse> imageResponses = property.getImages().stream()
+                .map(img -> new PropertyImageResponse(img.getId(), img.getImageUrl(), img.getSortOrder()))
+                .collect(Collectors.toList());
+
         return new PropertyResponse(
                 property.getId(),
                 UserResponse.from(property.getOwner()),
@@ -37,7 +46,8 @@ public record PropertyResponse(
                 property.getParking(),
                 property.getAvailableFrom(),
                 property.getStatus(),
-                property.getCreatedAt()
+                property.getCreatedAt(),
+                imageResponses
         );
     }
 }

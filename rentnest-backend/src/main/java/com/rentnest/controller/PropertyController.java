@@ -3,15 +3,18 @@ package com.rentnest.controller;
 import com.rentnest.dto.request.PropertyRequest;
 import com.rentnest.dto.response.PropertyResponse;
 import com.rentnest.service.PropertyService;
+import com.rentnest.service.ImageStorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/properties")
@@ -19,9 +22,18 @@ import java.util.List;
 public class PropertyController {
 
     private final PropertyService propertyService;
+    private final ImageStorageService imageStorageService;
 
-    public PropertyController(PropertyService propertyService) {
+    public PropertyController(PropertyService propertyService, ImageStorageService imageStorageService) {
         this.propertyService = propertyService;
+        this.imageStorageService = imageStorageService;
+    }
+
+    @PostMapping("/images/upload")
+    @Operation(summary = "Upload property listing image")
+    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
+        String url = imageStorageService.storeImage(file);
+        return ResponseEntity.ok(Map.of("url", url));
     }
 
     @PostMapping

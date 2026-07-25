@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import * as propertyApi from '../api/propertyApi.js';
+import ImageUploader from '../components/property/ImageUploader.jsx';
 
 export default function CreateListing({ propertyToEdit, onCancel, onSuccess }) {
   const isEdit = !!propertyToEdit;
@@ -14,6 +15,7 @@ export default function CreateListing({ propertyToEdit, onCancel, onSuccess }) {
     petFriendly: propertyToEdit?.petFriendly ?? false,
     parking: propertyToEdit?.parking ?? false,
     availableFrom: propertyToEdit?.availableFrom ?? '',
+    imageUrls: propertyToEdit?.images?.map(img => img.imageUrl) ?? [],
   });
 
   const [error, setError] = useState('');
@@ -169,6 +171,11 @@ export default function CreateListing({ propertyToEdit, onCancel, onSuccess }) {
                 Parking Slot Available
               </label>
             </div>
+
+            <ImageUploader 
+              imageUrls={form.imageUrls} 
+              onChange={(urls) => setForm({ ...form, imageUrls: urls })} 
+            />
 
             {error && <p className="form-error" role="alert">{error}</p>}
 

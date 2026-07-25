@@ -3,6 +3,7 @@ package com.rentnest.service.impl;
 import com.rentnest.dto.request.PropertyRequest;
 import com.rentnest.dto.response.PropertyResponse;
 import com.rentnest.entity.Property;
+import com.rentnest.entity.PropertyImage;
 import com.rentnest.entity.PropertyStatus;
 import com.rentnest.entity.User;
 import com.rentnest.entity.Role;
@@ -12,12 +13,15 @@ import com.rentnest.exception.ValidationException;
 import com.rentnest.repository.PropertyRepository;
 import com.rentnest.repository.UserRepository;
 import com.rentnest.service.PropertyService;
+import com.rentnest.service.ImageStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,10 +32,12 @@ public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final UserRepository userRepository;
+    private final ImageStorageService imageStorageService;
 
-    public PropertyServiceImpl(PropertyRepository propertyRepository, UserRepository userRepository) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, UserRepository userRepository, ImageStorageService imageStorageService) {
         this.propertyRepository = propertyRepository;
         this.userRepository = userRepository;
+        this.imageStorageService = imageStorageService;
     }
 
     @Override
@@ -53,6 +59,12 @@ public class PropertyServiceImpl implements PropertyService {
                 request.availableFrom(),
                 PropertyStatus.DRAFT
         );
+
+        if (request.imageUrls() != null) {
+            for (int i = 0; i < request.imageUrls().size(); i++) {
+                property.getImages().add(new PropertyImage(property, request.imageUrls().get(i), i));
+            }
+        }
 
         Property savedProperty = propertyRepository.save(property);
         log.info("Property created: propertyId={}, ownerId={}", savedProperty.getId(), owner.getId());
@@ -80,6 +92,20 @@ public class PropertyServiceImpl implements PropertyService {
         property.setPetFriendly(request.petFriendly());
         property.setParking(request.parking());
         property.setAvailableFrom(request.availableFrom());
+
+        // Update images list and clean up disk orphans
+        if (request.imageUrls() != null) {
+            Set<String> newUrls = new HashSet<>(request.imageUrls());
+            for (PropertyImage existingImage : property.getImages()) {
+                if (!newUrls.contains(existingImage.getImageUrl())) {
+                    imageStorageService.deleteImage(existingImage.getImageUrl());
+                }
+            }
+            property.getImages().clear();
+            for (int i = 0; i < request.imageUrls().size(); i++) {
+                property.getImages().add(new PropertyImage(property, request.imageUrls().get(i), i));
+            }
+        }
 
         Property updatedProperty = propertyRepository.save(property);
         log.info("Property updated: propertyId={}", updatedProperty.getId());
@@ -133,6 +159,10 @@ public class PropertyServiceImpl implements PropertyService {
             throw new ValidationException("Only DRAFT properties can be submitted for verification");
         }
 
+        if (property.getImages().isEmpty()) {
+            throw new ValidationException("Property must have at least one image before submission");
+        }
+
         property.setStatus(PropertyStatus.PENDING_VERIFICATION);
         Property updatedProperty = propertyRepository.save(property);
         log.info("Property submitted for verification: propertyId={}", updatedProperty.getId());
@@ -146,9 +176,6 @@ public class PropertyServiceImpl implements PropertyService {
 
         verifyOwnership(property, ownerEmail);
 
-        // In early phases before moderation is built, properties will remain PENDING_VERIFICATION.
-        // But to make the service defensive, we allow transitions from ACTIVE or APPROVED to RENTED.
-        // Wait, for flexibility during Phase 2 testing, let's allow moving to RENTED from ACTIVE or APPROVED.
         if (property.getStatus() != PropertyStatus.ACTIVE && property.getStatus() != PropertyStatus.APPROVED) {
             throw new ValidationException("Property must be ACTIVE or APPROVED to be marked as rented");
         }

@@ -3,6 +3,7 @@ package com.rentnest.dto.request;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public record PropertyRequest(
         @NotBlank @Size(max = 150) String title,
@@ -14,5 +15,6 @@ public record PropertyRequest(
         @NotNull Boolean furnished,
         @NotNull Boolean petFriendly,
         @NotNull Boolean parking,
-        @NotNull LocalDate availableFrom
+        @NotNull LocalDate availableFrom,
+        List<String> imageUrls
 ) {}

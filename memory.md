@@ -14,12 +14,12 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 ---
 
 ## 2. Current Project Status
-- **Current Phase:** Phase 2 (Completed & Verified)
-- **Next Phase:** Phase 3 (Image Upload)
+- **Current Phase:** Phase 3 (Completed & Verified)
+- **Next Phase:** Phase 4 (Search & Filtering)
 - **Local Databases:** 
   - MySQL database `rentnest` created.
   - User `rentnest_app` created with password `change-me` and full privileges on `rentnest` schema.
-  - Flyway migrations applied up to `V2__create_properties.sql`.
+  - Flyway migrations applied up to `V3__create_property_images.sql`.
 
 ---
 
@@ -37,16 +37,18 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 - **Goals Met:** Property listing CRUD and state transitions.
 - **Key Actions:** Created V2 properties migration, Property entity, Repository, Service (validating state machine), REST Controller, JUnit/Mockito tests, and React CreateListing form/MyListings dashboard.
 
+### Phase 3 — Image Upload (Completed & Verified)
+- **Goals Met:** Property listings support multiple images stored on disk with reordering and cover selections.
+- **Key Actions:** Created V3 property_images migration, PropertyImage entity, LocalStorageServiceImpl storing images on disk (JPG, PNG, WEBP), WebMvcConfig serving uploads statically, REST upload endpoints, unit tests for submission validation (min 1 image), and frontend ImageUploader with preview/reordering features.
+
 ---
 
 ## 4. Next Phase Details
 
-### Phase 3 — Image Upload (Ready to Start)
-- **Goal:** Listings support multiple images stored outside the database.
+### Phase 4 — Search & Filtering (Ready to Start)
+- **Goal:** Tenants can find relevant properties fast.
 - **Tasks:**
-  - Create `PropertyImage` entity and schema migration.
-  - Build `ImageStorageService` saving to local disk (behind an interface for future S3 integration).
-  - Create upload endpoint (multipart) returning stored URLs.
-  - Add file-type validation (jpg/png/webp), max size checks, and require at least 1 image before verification submission.
-  - Build frontend image uploader with preview and reordering support in the listing form.
-
+  - Build `PropertySpecification` using JPA Criteria to support combination of optional filters: city, locality, rent range, BHK, furnishing, parking, pet-friendly, available-from, type.
+  - Implement pagination and sorting support on backend search controller.
+  - Enforce constraint: only search for properties in `ACTIVE` status.
+  - Develop frontend search page containing filter panel, grid of results, and pagination navigation controls.

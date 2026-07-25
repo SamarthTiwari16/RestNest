@@ -11,6 +11,8 @@ import com.rentnest.exception.UnauthorizedActionException;
 import com.rentnest.exception.ValidationException;
 import com.rentnest.repository.PropertyRepository;
 import com.rentnest.repository.UserRepository;
+import com.rentnest.service.ImageStorageService;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +37,9 @@ class PropertyServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ImageStorageService imageStorageService;
 
     @InjectMocks
     private PropertyServiceImpl propertyService;
@@ -66,7 +71,8 @@ class PropertyServiceTest {
                 true,
                 true,
                 true,
-                LocalDate.now().plusDays(10)
+                LocalDate.now().plusDays(10),
+                Collections.emptyList()
         );
     }
 
@@ -162,6 +168,8 @@ class PropertyServiceTest {
     void submitForVerificationTransitionsDraftToPending() {
         Property property = new Property(owner, "Title", "City", "Loc", BigDecimal.TEN, 1, "HOUSE", false, false, false, LocalDate.now(), PropertyStatus.DRAFT);
         setId(property, 10L);
+        // Add at least one image to satisfy the constraint
+        property.getImages().add(new com.rentnest.entity.PropertyImage(property, "/uploads/img.jpg", 0));
 
         when(propertyRepository.findById(10L)).thenReturn(Optional.of(property));
         when(userRepository.findByEmail("ramesh@example.com")).thenReturn(Optional.of(owner));
@@ -171,5 +179,19 @@ class PropertyServiceTest {
 
         assertThat(response.status()).isEqualTo(PropertyStatus.PENDING_VERIFICATION);
         verify(propertyRepository).save(property);
+    }
+
+    @Test
+    void submitForVerificationThrowsValidationExceptionIfNoImages() {
+        Property property = new Property(owner, "Title", "City", "Loc", BigDecimal.TEN, 1, "HOUSE", false, false, false, LocalDate.now(), PropertyStatus.DRAFT);
+        setId(property, 10L);
+
+        when(propertyRepository.findById(10L)).thenReturn(Optional.of(property));
+        when(userRepository.findByEmail("ramesh@example.com")).thenReturn(Optional.of(owner));
+
+        assertThatThrownBy(() -> propertyService.submitForVerification(10L, "ramesh@example.com"))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("must have at least one image");
+        verify(propertyRepository, never()).save(any(Property.class));
     }
 }
