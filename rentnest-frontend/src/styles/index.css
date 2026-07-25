@@ -13,7 +13,7 @@ h1 { color: var(--ink); font-family: Fraunces, serif; font-size: clamp(2rem, 5vw
 .auth-subtitle, .account-card > p:not(.eyebrow) { color: var(--fog); line-height: 1.6; margin: .75rem 0 2rem; }
 .auth-form { display: grid; gap: 1rem; }
 label { color: var(--charcoal); display: grid; font-size: .9rem; font-weight: 500; gap: .4rem; }
-input { background: var(--paper-white); border: 1px solid rgb(138 130 114 / 55%); border-radius: 6px; color: var(--charcoal); padding: .72rem; }
+input { background: var(--paper-white); border: 1px solid rgb(138 130 114 / 55%); border-radius: 6px; color: var(--charcoal); padding: .72rem; width: 100%; }
 label span { color: var(--fog); font-size: .75rem; font-weight: 400; }
 .form-error { color: #8b2d20; font-size: .9rem; margin: 0; }
 .auth-switch { color: var(--fog); font-size: .9rem; margin: 1.5rem 0 0; text-align: center; }
@@ -189,6 +189,7 @@ select {
   color: var(--charcoal);
   padding: .72rem;
   font: inherit;
+  width: 100%;
 }
 select:focus-visible {
   outline: 2px solid var(--clay);
