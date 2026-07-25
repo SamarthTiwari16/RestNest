@@ -4,6 +4,7 @@ import Register from './pages/Auth/Register.jsx';
 import MyListings from './pages/MyListings.jsx';
 import CreateListing from './pages/CreateListing.jsx';
 import Search from './pages/Search.jsx';
+import SavedListings from './pages/SavedListings.jsx';
 import { useAuth } from './hooks/useAuth.js';
 
 export default function App() {
@@ -35,6 +36,16 @@ export default function App() {
         <Search 
           onGoToListings={() => setView('LISTINGS')}
           onGoToSearch={() => setView('SEARCH')}
+          onGoToSaved={() => setView('SAVED')}
+        />
+      );
+    }
+    if (view === 'SAVED') {
+      return (
+        <SavedListings 
+          onGoToListings={() => setView('LISTINGS')}
+          onGoToSearch={() => setView('SEARCH')}
+          onGoToSaved={() => setView('SAVED')}
         />
       );
     }
@@ -42,6 +53,7 @@ export default function App() {
       <MyListings 
         onGoToListings={() => setView('LISTINGS')}
         onGoToSearch={() => setView('SEARCH')}
+        onGoToSaved={() => setView('SAVED')}
         onCreateNew={() => {
           setEditingProperty(null);
           setView('CREATE');

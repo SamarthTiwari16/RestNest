@@ -14,12 +14,12 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 ---
 
 ## 2. Current Project Status
-- **Current Phase:** Phase 4 (Completed & Verified)
-- **Next Phase:** Phase 5 (Favourites)
+- **Current Phase:** Phase 5 (Completed & Verified)
+- **Next Phase:** Phase 6 (Enquiry Workflow)
 - **Local Databases:** 
   - MySQL database `rentnest` created.
   - User `rentnest_app` created with password `change-me` and full privileges on `rentnest` schema.
-  - Flyway migrations applied up to `V3__create_property_images.sql`.
+  - Flyway migrations applied up to `V4__create_favourites.sql`.
 
 ---
 
@@ -45,15 +45,20 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 - **Goals Met:** Tenants search and filter active property listings dynamically.
 - **Key Actions:** Implemented PropertySpecification using JPA Criteria APIs, created paginated search endpoints on PropertyController, integrated Axios queries on frontend API, and built Search.jsx page containing side filter selectors and card grid layout.
 
+### Phase 5 — Favourites (Completed & Verified)
+- **Goals Met:** Tenants can save and unsave active properties, and view their saved list.
+- **Key Actions:** Created V4 favourites migration, Favourite entity, FavouriteRepository, FavouriteService implementations, REST endpoints for save/unsave toggling, frontend favouritesApi, SavedListings page, and overlay heart icon button toggle on Search.jsx cards.
+
 ---
 
 ## 4. Next Phase Details
 
-### Phase 5 — Favourites (Ready to Start)
-- **Goal:** Tenants can save properties to revisit.
+### Phase 6 — Enquiry Workflow (Ready to Start)
+- **Goal:** The privacy-first contact exchange, this project's signature feature.
 - **Tasks:**
-  - Create `Favourite` entity mapping user ID and property ID with unique index validation.
-  - Expose API endpoints: add to favourites, remove from favourites, list my saved properties.
-  - Build UI icons (heart/save switches) on search card items.
-  - Build "Saved Properties" tab/view in the application.
+  - Create `Enquiry` entity mapping tenant ID, owner ID, property ID, dynamic moves-in data, messages, and state (`PENDING`, `ACCEPTED`, `DECLINED`).
+  - Create database migration for enquiries table.
+  - Develop backend endpoints: send enquiry, accept/decline enquiry, and list received/sent enquiries.
+  - Enforce constraint: hide owner email and phone number from the tenant until the owner accepts.
+  - Develop owner received enquiries board, accept/decline buttons, and tenant active enquiries checklist page.
 

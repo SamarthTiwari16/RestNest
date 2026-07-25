@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import * as propertyApi from '../api/propertyApi.js';
+import * as favouritesApi from '../api/favouritesApi.js';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function Search({ onGoToListings, onGoToSearch }) {
+export default function Search({ onGoToListings, onGoToSearch, onGoToSaved }) {
   const { user, logout } = useAuth();
   const [filters, setFilters] = useState({
     city: 'Bangalore', // Default to Bangalore to show properties
@@ -79,9 +80,46 @@ export default function Search({ onGoToListings, onGoToSearch }) {
     }
   };
 
+  const [favouriteIds, setFavouriteIds] = useState(new Set());
+
+  const fetchFavouriteIds = async () => {
+    try {
+      const { data } = await favouritesApi.getMyFavouritePropertyIds();
+      setFavouriteIds(new Set(data));
+    } catch (err) {
+      console.error('Failed to load saved IDs:', err);
+    }
+  };
+
+  const toggleFavourite = async (propertyId) => {
+    const isFavourited = favouriteIds.has(propertyId);
+    setFavouriteIds(prev => {
+      const next = new Set(prev);
+      if (isFavourited) next.delete(propertyId);
+      else next.add(propertyId);
+      return next;
+    });
+
+    try {
+      if (isFavourited) {
+        await favouritesApi.removeFavourite(propertyId);
+      } else {
+        await favouritesApi.addFavourite(propertyId);
+      }
+    } catch (err) {
+      setFavouriteIds(prev => {
+        const next = new Set(prev);
+        if (isFavourited) next.add(propertyId);
+        else next.delete(propertyId);
+        return next;
+      });
+    }
+  };
+
   // Initial load
   useEffect(() => {
     fetchResults(0);
+    fetchFavouriteIds();
   }, []);
 
   return (
@@ -100,6 +138,12 @@ export default function Search({ onGoToListings, onGoToSearch }) {
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem', borderBottom: '2px solid var(--parchment)', fontWeight: 'bold' }}
           >
             Search Properties
+          </button>
+          <button 
+            onClick={onGoToSaved}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            Saved Properties
           </button>
           <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
           <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
@@ -248,7 +292,35 @@ export default function Search({ onGoToListings, onGoToSearch }) {
                     const coverImage = item.images && item.images.length > 0 ? item.images[0].imageUrl : null;
                     const fullCoverUrl = coverImage ? (coverImage.startsWith('/') ? `http://localhost:8080${coverImage}` : coverImage) : null;
                     return (
-                      <div key={item.id} className="listing-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <div key={item.id} className="listing-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative' }}>
+                        
+                        {/* Favourites Heart Toggle Overlay */}
+                        <button
+                          onClick={() => toggleFavourite(item.id)}
+                          aria-label={favouriteIds.has(item.id) ? "Remove from saved properties" : "Save property"}
+                          style={{
+                            position: 'absolute',
+                            top: '1rem',
+                            right: '1rem',
+                            background: 'rgba(251, 248, 241, 0.95)',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '2.5rem',
+                            height: '2.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            padding: 0,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            zIndex: 10
+                          }}
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill={favouriteIds.has(item.id) ? "var(--clay)" : "none"} stroke="var(--clay)" strokeWidth="2">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                          </svg>
+                        </button>
+
                         <div>
                           {fullCoverUrl ? (
                             <div style={{ width: '100%', height: '160px', overflow: 'hidden', borderRadius: '4px', marginBottom: '0.8rem' }}>
