@@ -23,6 +23,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import com.rentnest.repository.specification.PropertySpecification;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Service
 @Transactional
@@ -201,6 +207,27 @@ public class PropertyServiceImpl implements PropertyService {
         Property updatedProperty = propertyRepository.save(property);
         log.info("Property withdrawn: propertyId={}", updatedProperty.getId());
         return PropertyResponse.from(updatedProperty);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PropertyResponse> searchProperties(
+            String city,
+            String locality,
+            BigDecimal minRent,
+            BigDecimal maxRent,
+            Integer bhk,
+            Boolean furnished,
+            Boolean parking,
+            Boolean petFriendly,
+            LocalDate availableFrom,
+            String propertyType,
+            Pageable pageable
+    ) {
+        Specification<Property> spec = PropertySpecification.filterProperties(
+                city, locality, minRent, maxRent, bhk, furnished, parking, petFriendly, availableFrom, propertyType
+        );
+        return propertyRepository.findAll(spec, pageable).map(PropertyResponse::from);
     }
 
     private void verifyOwnership(Property property, String ownerEmail) {

@@ -3,6 +3,7 @@ import Login from './pages/Auth/Login.jsx';
 import Register from './pages/Auth/Register.jsx';
 import MyListings from './pages/MyListings.jsx';
 import CreateListing from './pages/CreateListing.jsx';
+import Search from './pages/Search.jsx';
 import { useAuth } from './hooks/useAuth.js';
 
 export default function App() {
@@ -29,8 +30,18 @@ export default function App() {
         />
       );
     }
+    if (view === 'SEARCH') {
+      return (
+        <Search 
+          onGoToListings={() => setView('LISTINGS')}
+          onGoToSearch={() => setView('SEARCH')}
+        />
+      );
+    }
     return (
       <MyListings 
+        onGoToListings={() => setView('LISTINGS')}
+        onGoToSearch={() => setView('SEARCH')}
         onCreateNew={() => {
           setEditingProperty(null);
           setView('CREATE');

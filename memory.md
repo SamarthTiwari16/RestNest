@@ -14,8 +14,8 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 ---
 
 ## 2. Current Project Status
-- **Current Phase:** Phase 3 (Completed & Verified)
-- **Next Phase:** Phase 4 (Search & Filtering)
+- **Current Phase:** Phase 4 (Completed & Verified)
+- **Next Phase:** Phase 5 (Favourites)
 - **Local Databases:** 
   - MySQL database `rentnest` created.
   - User `rentnest_app` created with password `change-me` and full privileges on `rentnest` schema.
@@ -41,14 +41,19 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 - **Goals Met:** Property listings support multiple images stored on disk with reordering and cover selections.
 - **Key Actions:** Created V3 property_images migration, PropertyImage entity, LocalStorageServiceImpl storing images on disk (JPG, PNG, WEBP), WebMvcConfig serving uploads statically, REST upload endpoints, unit tests for submission validation (min 1 image), and frontend ImageUploader with preview/reordering features.
 
+### Phase 4 — Search & Filtering (Completed & Verified)
+- **Goals Met:** Tenants search and filter active property listings dynamically.
+- **Key Actions:** Implemented PropertySpecification using JPA Criteria APIs, created paginated search endpoints on PropertyController, integrated Axios queries on frontend API, and built Search.jsx page containing side filter selectors and card grid layout.
+
 ---
 
 ## 4. Next Phase Details
 
-### Phase 4 — Search & Filtering (Ready to Start)
-- **Goal:** Tenants can find relevant properties fast.
+### Phase 5 — Favourites (Ready to Start)
+- **Goal:** Tenants can save properties to revisit.
 - **Tasks:**
-  - Build `PropertySpecification` using JPA Criteria to support combination of optional filters: city, locality, rent range, BHK, furnishing, parking, pet-friendly, available-from, type.
-  - Implement pagination and sorting support on backend search controller.
-  - Enforce constraint: only search for properties in `ACTIVE` status.
-  - Develop frontend search page containing filter panel, grid of results, and pagination navigation controls.
+  - Create `Favourite` entity mapping user ID and property ID with unique index validation.
+  - Expose API endpoints: add to favourites, remove from favourites, list my saved properties.
+  - Build UI icons (heart/save switches) on search card items.
+  - Build "Saved Properties" tab/view in the application.
+

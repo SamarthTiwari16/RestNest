@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as propertyApi from '../api/propertyApi.js';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function MyListings({ onCreateNew, onEdit }) {
+export default function MyListings({ onCreateNew, onEdit, onGoToListings, onGoToSearch }) {
   const { user, logout } = useAuth();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,8 +50,20 @@ export default function MyListings({ onCreateNew, onEdit }) {
     <div>
       <header className="navbar">
         <h1>RentNest</h1>
-        <div className="nav-links">
-          <span className="nav-link">Hello, {user.name}</span>
+        <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button 
+            onClick={onGoToListings}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem', borderBottom: '2px solid var(--parchment)', fontWeight: 'bold' }}
+          >
+            My Listings
+          </button>
+          <button 
+            onClick={onGoToSearch}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            Search Properties
+          </button>
+          <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
           <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
         </div>
       </header>

@@ -194,4 +194,20 @@ class PropertyServiceTest {
                 .hasMessageContaining("must have at least one image");
         verify(propertyRepository, never()).save(any(Property.class));
     }
+
+    @Test
+    void searchPropertiesQueriesRepositoryWithSpecification() {
+        org.springframework.data.domain.Page<Property> page = new org.springframework.data.domain.PageImpl<>(Collections.emptyList());
+        when(propertyRepository.findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Pageable.class)))
+                .thenReturn(page);
+
+        org.springframework.data.domain.Page<PropertyResponse> result = propertyService.searchProperties(
+                "Bangalore", "Indiranagar", BigDecimal.valueOf(10000), BigDecimal.valueOf(30000), 2,
+                true, true, true, LocalDate.now(), "APARTMENT", org.springframework.data.domain.Pageable.unpaged()
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.isEmpty()).isTrue();
+        verify(propertyRepository).findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Pageable.class));
+    }
 }

@@ -15,6 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @RestController
 @RequestMapping("/api/properties")
@@ -34,6 +41,27 @@ public class PropertyController {
     public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
         String url = imageStorageService.storeImage(file);
         return ResponseEntity.ok(Map.of("url", url));
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search and filter active property listings with pagination")
+    public ResponseEntity<Page<PropertyResponse>> searchProperties(
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String locality,
+            @RequestParam(required = false) BigDecimal minRent,
+            @RequestParam(required = false) BigDecimal maxRent,
+            @RequestParam(required = false) Integer bhk,
+            @RequestParam(required = false) Boolean furnished,
+            @RequestParam(required = false) Boolean parking,
+            @RequestParam(required = false) Boolean petFriendly,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate availableFrom,
+            @RequestParam(required = false) String propertyType,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<PropertyResponse> response = propertyService.searchProperties(
+                city, locality, minRent, maxRent, bhk, furnished, parking, petFriendly, availableFrom, propertyType, pageable
+        );
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping

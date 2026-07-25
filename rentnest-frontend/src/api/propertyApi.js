@@ -37,3 +37,15 @@ export function uploadImage(file) {
     },
   });
 }
+
+export function searchProperties(filters, page = 0, size = 10) {
+  const params = new URLSearchParams();
+  Object.keys(filters).forEach(key => {
+    if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+      params.append(key, filters[key]);
+    }
+  });
+  params.append('page', page);
+  params.append('size', size);
+  return axiosClient.get(`/properties/search?${params.toString()}`);
+}
