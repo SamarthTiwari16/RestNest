@@ -4,7 +4,7 @@ import * as favouritesApi from '../api/favouritesApi.js';
 import PropertyDetailsModal from '../components/property/PropertyDetailsModal.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function Search({ onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
+export default function Search({ onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
   const { user, logout } = useAuth();
   const [filters, setFilters] = useState({
     city: 'Bangalore', // Default to Bangalore to show properties
@@ -129,6 +129,12 @@ export default function Search({ onGoToListings, onGoToSearch, onGoToSaved, onGo
       <header className="navbar">
         <h1>RentNest</h1>
         <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button 
+            onClick={onGoToDashboard}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            Dashboard
+          </button>
           <button 
             onClick={onGoToListings}
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import * as enquiriesApi from '../api/enquiriesApi.js';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function ReceivedEnquiries({ onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
+export default function ReceivedEnquiries({ onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
   const { user, logout } = useAuth();
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +57,12 @@ export default function ReceivedEnquiries({ onGoToListings, onGoToSearch, onGoTo
       <header className="navbar">
         <h1>RentNest</h1>
         <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button 
+            onClick={onGoToDashboard}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            Dashboard
+          </button>
           <button 
             onClick={onGoToListings}
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}

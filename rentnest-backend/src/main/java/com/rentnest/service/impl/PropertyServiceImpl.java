@@ -14,6 +14,7 @@ import com.rentnest.repository.PropertyRepository;
 import com.rentnest.repository.UserRepository;
 import com.rentnest.service.PropertyService;
 import com.rentnest.service.ImageStorageService;
+import com.rentnest.service.DashboardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -39,11 +40,17 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyRepository propertyRepository;
     private final UserRepository userRepository;
     private final ImageStorageService imageStorageService;
+    private DashboardService dashboardService;
 
     public PropertyServiceImpl(PropertyRepository propertyRepository, UserRepository userRepository, ImageStorageService imageStorageService) {
         this.propertyRepository = propertyRepository;
         this.userRepository = userRepository;
         this.imageStorageService = imageStorageService;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    public void setDashboardService(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
     }
 
     @Override
@@ -137,6 +144,15 @@ public class PropertyServiceImpl implements PropertyService {
 
             if (!isOwner && !isAdmin) {
                 throw new UnauthorizedActionException("You are not authorized to view this listing");
+            }
+        }
+
+        // Log view for recently-viewed tracking (async-safe: ignore errors)
+        if (dashboardService != null && currentUserEmail != null) {
+            try {
+                dashboardService.logPropertyView(id, currentUserEmail);
+            } catch (Exception e) {
+                log.warn("Failed to log property view: propertyId={}, user={}", id, currentUserEmail);
             }
         }
 

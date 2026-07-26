@@ -102,6 +102,7 @@ public class Property {
     public List<PropertyImage> getImages() { return images; }
 
     public void setOwner(User owner) { this.owner = owner; }
+    public void setId(Long id) { this.id = id; }
     public void setTitle(String title) { this.title = title; }
     public void setCity(String city) { this.city = city; }
     public void setLocality(String locality) { this.locality = locality; }

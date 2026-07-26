@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as propertyApi from '../api/propertyApi.js';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function MyListings({ onCreateNew, onEdit, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
+export default function MyListings({ onCreateNew, onEdit, onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
   const { user, logout } = useAuth();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,6 +51,12 @@ export default function MyListings({ onCreateNew, onEdit, onGoToListings, onGoTo
       <header className="navbar">
         <h1>RentNest</h1>
         <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button 
+            onClick={onGoToDashboard}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            Dashboard
+          </button>
           <button 
             onClick={onGoToListings}
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem', borderBottom: '2px solid var(--parchment)', fontWeight: 'bold' }}

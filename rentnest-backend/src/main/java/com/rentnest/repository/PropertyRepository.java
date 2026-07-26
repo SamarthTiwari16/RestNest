@@ -12,4 +12,6 @@ import java.util.List;
 public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSpecificationExecutor<Property> {
     List<Property> findAllByOwnerId(Long ownerId);
     List<Property> findAllByStatus(PropertyStatus status);
+    long countByOwnerId(Long ownerId);
+    long countByOwnerIdAndStatus(Long ownerId, PropertyStatus status);
 }
