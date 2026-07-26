@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as propertyApi from '../api/propertyApi.js';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function MyListings({ onCreateNew, onEdit, onGoToListings, onGoToSearch, onGoToSaved }) {
+export default function MyListings({ onCreateNew, onEdit, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
   const { user, logout } = useAuth();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,6 +58,12 @@ export default function MyListings({ onCreateNew, onEdit, onGoToListings, onGoTo
             My Listings
           </button>
           <button 
+            onClick={onGoToReceivedEnquiries}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            Received Enquiries
+          </button>
+          <button 
             onClick={onGoToSearch}
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
           >
@@ -68,6 +74,12 @@ export default function MyListings({ onCreateNew, onEdit, onGoToListings, onGoTo
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
           >
             Saved Properties
+          </button>
+          <button 
+            onClick={onGoToSentEnquiries}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            My Enquiries
           </button>
           <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
           <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>

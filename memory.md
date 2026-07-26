@@ -14,12 +14,12 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 ---
 
 ## 2. Current Project Status
-- **Current Phase:** Phase 5 (Completed & Verified)
-- **Next Phase:** Phase 6 (Enquiry Workflow)
+- **Current Phase:** Phase 6 (Completed & Verified)
+- **Next Phase:** Phase 7 (Dashboards)
 - **Local Databases:** 
   - MySQL database `rentnest` created.
   - User `rentnest_app` created with password `change-me` and full privileges on `rentnest` schema.
-  - Flyway migrations applied up to `V4__create_favourites.sql`.
+  - Flyway migrations applied up to `V5__create_enquiries.sql`.
 
 ---
 
@@ -49,16 +49,20 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 - **Goals Met:** Tenants can save and unsave active properties, and view their saved list.
 - **Key Actions:** Created V4 favourites migration, Favourite entity, FavouriteRepository, FavouriteService implementations, REST endpoints for save/unsave toggling, frontend favouritesApi, SavedListings page, and overlay heart icon button toggle on Search.jsx cards.
 
+### Phase 6 — Enquiry Workflow (Completed & Verified)
+- **Goals Met:** Privacy-first contact exchange, tenant submitting message/move-in/occupants and owners accepting/declining requests to unmask contact credentials.
+- **Key Actions:** Created V5 enquiries migration, Enquiry entity, EnquiryStatus enum, EnquiryRepository, EnquiryService, and REST Controller. Configured server-side contact masking. Created frontend enquiriesApi, PropertyDetailsModal with Carousel & EnquiryForm, SentEnquiries sent list, ReceivedEnquiries received list, and linked them to App.jsx. Verified with JUnit tests and browser E2E flow.
+
 ---
 
 ## 4. Next Phase Details
 
-### Phase 6 — Enquiry Workflow (Ready to Start)
-- **Goal:** The privacy-first contact exchange, this project's signature feature.
+### Phase 7 — Dashboards (Ready to Start)
+- **Goal:** At-a-glance summaries for both sides of the single account.
 - **Tasks:**
-  - Create `Enquiry` entity mapping tenant ID, owner ID, property ID, dynamic moves-in data, messages, and state (`PENDING`, `ACCEPTED`, `DECLINED`).
-  - Create database migration for enquiries table.
-  - Develop backend endpoints: send enquiry, accept/decline enquiry, and list received/sent enquiries.
-  - Enforce constraint: hide owner email and phone number from the tenant until the owner accepts.
-  - Develop owner received enquiries board, accept/decline buttons, and tenant active enquiries checklist page.
+  - Build Owner Dashboard aggregation queries in Service layer (total properties, active listings, total enquiries received, rented count) avoiding N+1 queries.
+  - Build Tenant Dashboard aggregation queries (saved properties count, my enquiries status counts, recently viewed listings).
+  - Create REST endpoints or modify existing ones to serve dashboard statistics.
+  - Design premium, visual Dashboard UI page showing widgets, cards, and state summary statistics.
+  - Integrate recently viewed listings tracking.
 

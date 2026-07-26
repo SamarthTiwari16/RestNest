@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import * as favouritesApi from '../api/favouritesApi.js';
+import PropertyDetailsModal from '../components/property/PropertyDetailsModal.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function SavedListings({ onGoToListings, onGoToSearch, onGoToSaved }) {
+export default function SavedListings({ onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
   const { user, logout } = useAuth();
   const [savedListings, setSavedListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
   const fetchSavedListings = async () => {
     try {
@@ -49,6 +51,12 @@ export default function SavedListings({ onGoToListings, onGoToSearch, onGoToSave
             My Listings
           </button>
           <button 
+            onClick={onGoToReceivedEnquiries}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            Received Enquiries
+          </button>
+          <button 
             onClick={onGoToSearch}
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
           >
@@ -59,6 +67,12 @@ export default function SavedListings({ onGoToListings, onGoToSearch, onGoToSave
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem', borderBottom: '2px solid var(--parchment)', fontWeight: 'bold' }}
           >
             Saved Properties
+          </button>
+          <button 
+            onClick={onGoToSentEnquiries}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            My Enquiries
           </button>
           <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
           <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
@@ -152,7 +166,7 @@ export default function SavedListings({ onGoToListings, onGoToSearch, onGoToSave
                     </div>
 
                     <div className="listing-actions" style={{ marginTop: '1.2rem' }}>
-                      <button style={{ width: '100%' }}>View Details</button>
+                      <button style={{ width: '100%' }} onClick={() => setSelectedProperty(item)}>View Details</button>
                     </div>
                   </div>
                 );
@@ -161,6 +175,14 @@ export default function SavedListings({ onGoToListings, onGoToSearch, onGoToSave
           </div>
         )}
       </main>
+
+      {selectedProperty && (
+        <PropertyDetailsModal 
+          property={selectedProperty} 
+          onClose={() => setSelectedProperty(null)}
+          onEnquirySuccess={() => fetchSavedListings()}
+        />
+      )}
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import * as propertyApi from '../api/propertyApi.js';
 import * as favouritesApi from '../api/favouritesApi.js';
+import PropertyDetailsModal from '../components/property/PropertyDetailsModal.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function Search({ onGoToListings, onGoToSearch, onGoToSaved }) {
+export default function Search({ onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
   const { user, logout } = useAuth();
   const [filters, setFilters] = useState({
     city: 'Bangalore', // Default to Bangalore to show properties
@@ -24,6 +25,7 @@ export default function Search({ onGoToListings, onGoToSearch, onGoToSaved }) {
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
   const handleSearch = (e) => {
     if (e) e.preventDefault();
@@ -134,6 +136,12 @@ export default function Search({ onGoToListings, onGoToSearch, onGoToSaved }) {
             My Listings
           </button>
           <button 
+            onClick={onGoToReceivedEnquiries}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            Received Enquiries
+          </button>
+          <button 
             onClick={onGoToSearch}
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem', borderBottom: '2px solid var(--parchment)', fontWeight: 'bold' }}
           >
@@ -144,6 +152,12 @@ export default function Search({ onGoToListings, onGoToSearch, onGoToSaved }) {
             style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
           >
             Saved Properties
+          </button>
+          <button 
+            onClick={onGoToSentEnquiries}
+            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+          >
+            My Enquiries
           </button>
           <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
           <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
@@ -350,7 +364,7 @@ export default function Search({ onGoToListings, onGoToSearch, onGoToSaved }) {
                         </div>
 
                         <div className="listing-actions" style={{ marginTop: '1.2rem' }}>
-                          <button style={{ width: '100%' }}>View Details</button>
+                          <button style={{ width: '100%' }} onClick={() => setSelectedProperty(item)}>View Details</button>
                         </div>
                       </div>
                     );
@@ -384,6 +398,13 @@ export default function Search({ onGoToListings, onGoToSearch, onGoToSaved }) {
           </div>
         </div>
       </main>
+
+      {selectedProperty && (
+        <PropertyDetailsModal 
+          property={selectedProperty} 
+          onClose={() => setSelectedProperty(null)}
+        />
+      )}
     </div>
   );
 

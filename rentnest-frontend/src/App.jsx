@@ -5,6 +5,8 @@ import MyListings from './pages/MyListings.jsx';
 import CreateListing from './pages/CreateListing.jsx';
 import Search from './pages/Search.jsx';
 import SavedListings from './pages/SavedListings.jsx';
+import SentEnquiries from './pages/SentEnquiries.jsx';
+import ReceivedEnquiries from './pages/ReceivedEnquiries.jsx';
 import { useAuth } from './hooks/useAuth.js';
 
 export default function App() {
@@ -37,6 +39,8 @@ export default function App() {
           onGoToListings={() => setView('LISTINGS')}
           onGoToSearch={() => setView('SEARCH')}
           onGoToSaved={() => setView('SAVED')}
+          onGoToSentEnquiries={() => setView('MY_ENQUIRIES')}
+          onGoToReceivedEnquiries={() => setView('RECEIVED_ENQUIRIES')}
         />
       );
     }
@@ -46,6 +50,30 @@ export default function App() {
           onGoToListings={() => setView('LISTINGS')}
           onGoToSearch={() => setView('SEARCH')}
           onGoToSaved={() => setView('SAVED')}
+          onGoToSentEnquiries={() => setView('MY_ENQUIRIES')}
+          onGoToReceivedEnquiries={() => setView('RECEIVED_ENQUIRIES')}
+        />
+      );
+    }
+    if (view === 'MY_ENQUIRIES') {
+      return (
+        <SentEnquiries 
+          onGoToListings={() => setView('LISTINGS')}
+          onGoToSearch={() => setView('SEARCH')}
+          onGoToSaved={() => setView('SAVED')}
+          onGoToSentEnquiries={() => setView('MY_ENQUIRIES')}
+          onGoToReceivedEnquiries={() => setView('RECEIVED_ENQUIRIES')}
+        />
+      );
+    }
+    if (view === 'RECEIVED_ENQUIRIES') {
+      return (
+        <ReceivedEnquiries 
+          onGoToListings={() => setView('LISTINGS')}
+          onGoToSearch={() => setView('SEARCH')}
+          onGoToSaved={() => setView('SAVED')}
+          onGoToSentEnquiries={() => setView('MY_ENQUIRIES')}
+          onGoToReceivedEnquiries={() => setView('RECEIVED_ENQUIRIES')}
         />
       );
     }
@@ -54,6 +82,8 @@ export default function App() {
         onGoToListings={() => setView('LISTINGS')}
         onGoToSearch={() => setView('SEARCH')}
         onGoToSaved={() => setView('SAVED')}
+        onGoToSentEnquiries={() => setView('MY_ENQUIRIES')}
+        onGoToReceivedEnquiries={() => setView('RECEIVED_ENQUIRIES')}
         onCreateNew={() => {
           setEditingProperty(null);
           setView('CREATE');
