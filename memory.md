@@ -14,12 +14,12 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 ---
 
 ## 2. Current Project Status
-- **Current Phase:** Phase 7 (Completed & Verified)
-- **Next Phase:** Phase 8 (Notifications / Admin Panel)
+- **Current Phase:** Phase 9 (Completed & Verified)
+- **Next Phase:** None (All development phases completed successfully)
 - **Local Databases:** 
   - MySQL database `rentnest` created.
   - User `rentnest_app` created with password `change-me` and full privileges on `rentnest` schema.
-  - Flyway migrations applied up to `V6__create_recently_viewed.sql`.
+  - Flyway migrations applied up to `V7__add_rejection_reason.sql`.
 
 ---
 
@@ -57,17 +57,17 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 - **Goals Met:** At-a-glance summaries for both owner and tenant modes of the single user account, including recently viewed listings tracking.
 - **Key Actions:** Created V6 recently viewed migration, RecentlyViewed entity and repository, DashboardService with optimized queries to avoid N+1 issues, REST endpoints `/api/dashboard/owner` and `/api/dashboard/tenant`, unit tests (`DashboardServiceTest`), a premium dashboard UI component on the frontend (`Dashboard.jsx`), and integrated detail page view tracking by fetching property details on modal open.
 
+### Phase 8 — Admin Moderation (Completed & Verified)
+- **Goals Met:** Admin user role, listing verification queue, property approve/reject with rejection reason, and active listing deactivation.
+- **Key Actions:** Created V7 database migration adding `rejection_reason` column, seeded default admin `admin@rentnest.com` with role `ROLE_ADMIN` on startup, created `AdminController` with moderation endpoints, implemented custom Spring Security role checks, added full test suites, and built the frontend `AdminReview` queue portal and detail deactivation hooks.
+
+### Phase 9 — Polish: Validation, Exceptions, Logging, Docs (Completed & Verified)
+- **Goals Met:** End-to-end polish, custom API exception serialization safety, clean OpenAPI Swagger UI documentation, and robust SLF4J logging for critical events.
+- **Key Actions:** Added OpenAPI annotations (`@Tag` and `@Operation`) to DashboardController to organize and label stats endpoints. Added SLF4J logger actions in FavouriteServiceImpl to trace save/unsave properties. Ran automated build checks and validated in-browser Swagger UI correctness.
+
 ---
 
 ## 4. Next Phase Details
 
-### Phase 8 — Admin Moderation (Ready to Start)
-- **Goal:** Listings are verified by administrators before going public.
-- **Tasks:**
-  - Secure `/api/admin/**` endpoints so only `ROLE_ADMIN` users can access them.
-  - Implement moderation queue endpoint to list `PENDING_VERIFICATION` properties.
-  - Implement approve endpoint (status changes to `ACTIVE` and clears rejection reason).
-  - Implement reject endpoint (requires a rejection reason, status goes back to `DRAFT`).
-  - Implement deactivate endpoint (admin can archive any active listing).
-  - Seed default admin user (`admin@rentnest.com` / `AdminPass!`).
-  - Build `AdminReview` page for listing moderation on the frontend.
+### Phase 10 — Project Launch & Wrap-up (Ready)
+- **Goal:** Hand over the fully polished codebase to the user, ensure all artifacts, walkthroughs, and logs are up to date.
