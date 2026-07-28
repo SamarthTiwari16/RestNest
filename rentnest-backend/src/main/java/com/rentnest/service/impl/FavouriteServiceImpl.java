@@ -9,6 +9,8 @@ import com.rentnest.repository.FavouriteRepository;
 import com.rentnest.repository.PropertyRepository;
 import com.rentnest.repository.UserRepository;
 import com.rentnest.service.FavouriteService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class FavouriteServiceImpl implements FavouriteService {
+
+    private static final Logger log = LoggerFactory.getLogger(FavouriteServiceImpl.class);
 
     private final FavouriteRepository favouriteRepository;
     private final UserRepository userRepository;
@@ -42,6 +46,7 @@ public class FavouriteServiceImpl implements FavouriteService {
 
         Favourite favourite = new Favourite(user, property);
         favouriteRepository.save(favourite);
+        log.info("Favourite added: propertyId={}, user={}", propertyId, userEmail);
     }
 
     @Override
@@ -50,7 +55,10 @@ public class FavouriteServiceImpl implements FavouriteService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userEmail));
 
         favouriteRepository.findByUserIdAndPropertyId(user.getId(), propertyId)
-                .ifPresent(favouriteRepository::delete);
+                .ifPresent(f -> {
+                    favouriteRepository.delete(f);
+                    log.info("Favourite removed: propertyId={}, user={}", propertyId, userEmail);
+                });
     }
 
     @Override
