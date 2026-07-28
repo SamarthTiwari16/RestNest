@@ -116,6 +116,16 @@ export default function ImageUploader({ imageUrls, onChange }) {
             style={{ display: 'none' }} 
           />
         </label>
+
+        <button
+          type="button"
+          id="btn-add-mock-image"
+          onClick={() => onChange([...imageUrls, '/uploads/mock-image.jpg'])}
+          style={{ border: '2px dashed var(--fog)', borderRadius: '4px', aspectRatio: '1/1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', backgroundColor: 'var(--parchment)' }}
+        >
+          <span style={{ fontSize: '1.5rem', color: 'var(--fog)' }}>+</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--charcoal)' }}>Mock Image</span>
+        </button>
       </div>
     </div>
   );

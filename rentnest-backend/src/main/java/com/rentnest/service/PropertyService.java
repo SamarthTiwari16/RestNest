@@ -29,4 +29,8 @@ public interface PropertyService {
             String propertyType,
             Pageable pageable
     );
+    Page<PropertyResponse> getPendingProperties(Pageable pageable);
+    PropertyResponse approveProperty(Long id);
+    PropertyResponse rejectProperty(Long id, String reason);
+    PropertyResponse deactivateProperty(Long id);
 }

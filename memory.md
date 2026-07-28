@@ -14,12 +14,12 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 ---
 
 ## 2. Current Project Status
-- **Current Phase:** Phase 6 (Completed & Verified)
-- **Next Phase:** Phase 7 (Dashboards)
+- **Current Phase:** Phase 7 (Completed & Verified)
+- **Next Phase:** Phase 8 (Notifications / Admin Panel)
 - **Local Databases:** 
   - MySQL database `rentnest` created.
   - User `rentnest_app` created with password `change-me` and full privileges on `rentnest` schema.
-  - Flyway migrations applied up to `V5__create_enquiries.sql`.
+  - Flyway migrations applied up to `V6__create_recently_viewed.sql`.
 
 ---
 
@@ -53,16 +53,21 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 - **Goals Met:** Privacy-first contact exchange, tenant submitting message/move-in/occupants and owners accepting/declining requests to unmask contact credentials.
 - **Key Actions:** Created V5 enquiries migration, Enquiry entity, EnquiryStatus enum, EnquiryRepository, EnquiryService, and REST Controller. Configured server-side contact masking. Created frontend enquiriesApi, PropertyDetailsModal with Carousel & EnquiryForm, SentEnquiries sent list, ReceivedEnquiries received list, and linked them to App.jsx. Verified with JUnit tests and browser E2E flow.
 
+### Phase 7 — Dashboards (Completed & Verified)
+- **Goals Met:** At-a-glance summaries for both owner and tenant modes of the single user account, including recently viewed listings tracking.
+- **Key Actions:** Created V6 recently viewed migration, RecentlyViewed entity and repository, DashboardService with optimized queries to avoid N+1 issues, REST endpoints `/api/dashboard/owner` and `/api/dashboard/tenant`, unit tests (`DashboardServiceTest`), a premium dashboard UI component on the frontend (`Dashboard.jsx`), and integrated detail page view tracking by fetching property details on modal open.
+
 ---
 
 ## 4. Next Phase Details
 
-### Phase 7 — Dashboards (Ready to Start)
-- **Goal:** At-a-glance summaries for both sides of the single account.
+### Phase 8 — Admin Moderation (Ready to Start)
+- **Goal:** Listings are verified by administrators before going public.
 - **Tasks:**
-  - Build Owner Dashboard aggregation queries in Service layer (total properties, active listings, total enquiries received, rented count) avoiding N+1 queries.
-  - Build Tenant Dashboard aggregation queries (saved properties count, my enquiries status counts, recently viewed listings).
-  - Create REST endpoints or modify existing ones to serve dashboard statistics.
-  - Design premium, visual Dashboard UI page showing widgets, cards, and state summary statistics.
-  - Integrate recently viewed listings tracking.
-
+  - Secure `/api/admin/**` endpoints so only `ROLE_ADMIN` users can access them.
+  - Implement moderation queue endpoint to list `PENDING_VERIFICATION` properties.
+  - Implement approve endpoint (status changes to `ACTIVE` and clears rejection reason).
+  - Implement reject endpoint (requires a rejection reason, status goes back to `DRAFT`).
+  - Implement deactivate endpoint (admin can archive any active listing).
+  - Seed default admin user (`admin@rentnest.com` / `AdminPass!`).
+  - Build `AdminReview` page for listing moderation on the frontend.

@@ -210,4 +210,112 @@ class PropertyServiceTest {
         assertThat(result.isEmpty()).isTrue();
         verify(propertyRepository).findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Pageable.class));
     }
+
+    @Test
+    void getPendingProperties_returnsPendingProperties() {
+        org.springframework.data.domain.Page<Property> page = new org.springframework.data.domain.PageImpl<>(Collections.emptyList());
+        when(propertyRepository.findAllByStatus(eq(PropertyStatus.PENDING_VERIFICATION), any(org.springframework.data.domain.Pageable.class)))
+                .thenReturn(page);
+
+        org.springframework.data.domain.Page<PropertyResponse> result = propertyService.getPendingProperties(org.springframework.data.domain.Pageable.unpaged());
+
+        assertThat(result).isNotNull();
+        verify(propertyRepository).findAllByStatus(eq(PropertyStatus.PENDING_VERIFICATION), any(org.springframework.data.domain.Pageable.class));
+    }
+
+    @Test
+    void approveProperty_transitionsStatusToActiveAndClearsRejectionReason() {
+        Property property = new Property(owner, "Title", "City", "Loc", BigDecimal.TEN, 1, "HOUSE", false, false, false, LocalDate.now(), PropertyStatus.PENDING_VERIFICATION);
+        setId(property, 10L);
+        property.setRejectionReason("Previous rejection");
+
+        when(propertyRepository.findById(10L)).thenReturn(Optional.of(property));
+        when(propertyRepository.save(any(Property.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        PropertyResponse response = propertyService.approveProperty(10L);
+
+        assertThat(response.status()).isEqualTo(PropertyStatus.ACTIVE);
+        assertThat(response.rejectionReason()).isNull();
+        verify(propertyRepository).save(property);
+    }
+
+    @Test
+    void approveProperty_throwsValidationExceptionForNonPending() {
+        Property property = new Property(owner, "Title", "City", "Loc", BigDecimal.TEN, 1, "HOUSE", false, false, false, LocalDate.now(), PropertyStatus.DRAFT);
+        setId(property, 10L);
+
+        when(propertyRepository.findById(10L)).thenReturn(Optional.of(property));
+
+        assertThatThrownBy(() -> propertyService.approveProperty(10L))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("PENDING_VERIFICATION status");
+        verify(propertyRepository, never()).save(any(Property.class));
+    }
+
+    @Test
+    void rejectProperty_transitionsStatusToDraftAndSetsRejectionReason() {
+        Property property = new Property(owner, "Title", "City", "Loc", BigDecimal.TEN, 1, "HOUSE", false, false, false, LocalDate.now(), PropertyStatus.PENDING_VERIFICATION);
+        setId(property, 10L);
+
+        when(propertyRepository.findById(10L)).thenReturn(Optional.of(property));
+        when(propertyRepository.save(any(Property.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        PropertyResponse response = propertyService.rejectProperty(10L, "Missing photos");
+
+        assertThat(response.status()).isEqualTo(PropertyStatus.DRAFT);
+        assertThat(response.rejectionReason()).isEqualTo("Missing photos");
+        verify(propertyRepository).save(property);
+    }
+
+    @Test
+    void rejectProperty_throwsValidationExceptionForNonPending() {
+        Property property = new Property(owner, "Title", "City", "Loc", BigDecimal.TEN, 1, "HOUSE", false, false, false, LocalDate.now(), PropertyStatus.DRAFT);
+        setId(property, 10L);
+
+        when(propertyRepository.findById(10L)).thenReturn(Optional.of(property));
+
+        assertThatThrownBy(() -> propertyService.rejectProperty(10L, "Reason"))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("PENDING_VERIFICATION status");
+        verify(propertyRepository, never()).save(any(Property.class));
+    }
+
+    @Test
+    void rejectProperty_throwsValidationExceptionForEmptyReason() {
+        assertThatThrownBy(() -> propertyService.rejectProperty(10L, ""))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Rejection reason is required");
+        
+        assertThatThrownBy(() -> propertyService.rejectProperty(10L, null))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Rejection reason is required");
+        verify(propertyRepository, never()).save(any(Property.class));
+    }
+
+    @Test
+    void deactivateProperty_transitionsStatusToArchived() {
+        Property property = new Property(owner, "Title", "City", "Loc", BigDecimal.TEN, 1, "HOUSE", false, false, false, LocalDate.now(), PropertyStatus.ACTIVE);
+        setId(property, 10L);
+
+        when(propertyRepository.findById(10L)).thenReturn(Optional.of(property));
+        when(propertyRepository.save(any(Property.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        PropertyResponse response = propertyService.deactivateProperty(10L);
+
+        assertThat(response.status()).isEqualTo(PropertyStatus.ARCHIVED);
+        verify(propertyRepository).save(property);
+    }
+
+    @Test
+    void deactivateProperty_throwsValidationExceptionForNonActive() {
+        Property property = new Property(owner, "Title", "City", "Loc", BigDecimal.TEN, 1, "HOUSE", false, false, false, LocalDate.now(), PropertyStatus.DRAFT);
+        setId(property, 10L);
+
+        when(propertyRepository.findById(10L)).thenReturn(Optional.of(property));
+
+        assertThatThrownBy(() -> propertyService.deactivateProperty(10L))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Only ACTIVE properties");
+        verify(propertyRepository, never()).save(any(Property.class));
+    }
 }

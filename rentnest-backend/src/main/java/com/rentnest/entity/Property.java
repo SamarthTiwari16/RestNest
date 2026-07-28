@@ -56,6 +56,9 @@ public class Property {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "rejection_reason", length = 500)
+    private String rejectionReason;
+
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sortOrder ASC")
     private List<PropertyImage> images = new ArrayList<>();
@@ -101,6 +104,8 @@ public class Property {
     public Instant getCreatedAt() { return createdAt; }
     public List<PropertyImage> getImages() { return images; }
 
+    public String getRejectionReason() { return rejectionReason; }
+
     public void setOwner(User owner) { this.owner = owner; }
     public void setId(Long id) { this.id = id; }
     public void setTitle(String title) { this.title = title; }
@@ -115,4 +120,5 @@ public class Property {
     public void setAvailableFrom(LocalDate availableFrom) { this.availableFrom = availableFrom; }
     public void setStatus(PropertyStatus status) { this.status = status; }
     public void setImages(List<PropertyImage> images) { this.images = images; }
+    public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
 }

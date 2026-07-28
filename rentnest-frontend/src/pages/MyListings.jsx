@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as propertyApi from '../api/propertyApi.js';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function MyListings({ onCreateNew, onEdit, onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
+export default function MyListings({ onCreateNew, onEdit, onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries, onGoToAdminReview }) {
   const { user, logout } = useAuth();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,6 +87,14 @@ export default function MyListings({ onCreateNew, onEdit, onGoToDashboard, onGoT
           >
             My Enquiries
           </button>
+          {user.role === 'ROLE_ADMIN' && (
+            <button 
+              onClick={onGoToAdminReview}
+              style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+            >
+              Admin Review
+            </button>
+          )}
           <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
           <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
         </div>
@@ -142,6 +150,11 @@ export default function MyListings({ onCreateNew, onEdit, onGoToDashboard, onGoT
                     <span>•</span>
                     <span>{item.petFriendly ? 'Pet Friendly' : 'No Pets'}</span>
                   </div>
+                  {item.status === 'DRAFT' && item.rejectionReason && (
+                    <div style={{ marginTop: '0.75rem', padding: '0.65rem 0.85rem', background: '#FFF0EC', border: '1px solid #FFDCD4', borderRadius: '6px', fontSize: '0.825rem', color: 'var(--clay)', lineHeight: 1.4 }}>
+                      <strong>Feedback:</strong> {item.rejectionReason}
+                    </div>
+                  )}
                 </div>
 
                 <div className="listing-actions" style={{ marginTop: '1.5rem' }}>

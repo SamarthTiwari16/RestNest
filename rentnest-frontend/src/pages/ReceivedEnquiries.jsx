@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import * as enquiriesApi from '../api/enquiriesApi.js';
 import { useAuth } from '../hooks/useAuth.js';
 
-export default function ReceivedEnquiries({ onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries }) {
+export default function ReceivedEnquiries({ onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries, onGoToAdminReview }) {
   const { user, logout } = useAuth();
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -93,6 +93,14 @@ export default function ReceivedEnquiries({ onGoToDashboard, onGoToListings, onG
           >
             My Enquiries
           </button>
+          {user.role === 'ROLE_ADMIN' && (
+            <button 
+              onClick={onGoToAdminReview}
+              style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
+            >
+              Admin Review
+            </button>
+          )}
           <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
           <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
         </div>

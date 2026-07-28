@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as enquiriesApi from '../../api/enquiriesApi.js';
+import * as propertyApi from '../../api/propertyApi.js';
+import * as adminApi from '../../api/adminApi.js';
 import { useAuth } from '../../hooks/useAuth.js';
 
 export default function PropertyDetailsModal({ property, onClose, onEnquirySuccess }) {
@@ -40,6 +42,15 @@ export default function PropertyDetailsModal({ property, onClose, onEnquirySucce
 
   useEffect(() => {
     fetchEnquiryStatus();
+    // Fetch property details to trigger backend view logging
+    const logView = async () => {
+      try {
+        await propertyApi.getProperty(property.id);
+      } catch (err) {
+        console.error('Failed to log property view:', err);
+      }
+    };
+    logView();
   }, [property.id]);
 
   const handleSubmit = async (e) => {
@@ -81,6 +92,19 @@ export default function PropertyDetailsModal({ property, onClose, onEnquirySucce
   };
 
   const isOwner = property.ownerId === user.id || property.owner?.id === user.id;
+
+  const handleDeactivate = async () => {
+    if (window.confirm("Are you sure you want to deactivate/archive this listing? This action cannot be undone.")) {
+      try {
+        await adminApi.deactivateProperty(property.id);
+        alert("Listing successfully deactivated and archived.");
+        onClose();
+        if (onEnquirySuccess) onEnquirySuccess();
+      } catch (err) {
+        alert("Failed to deactivate property listing.");
+      }
+    }
+  };
 
   return (
     <div style={{
@@ -275,6 +299,15 @@ export default function PropertyDetailsModal({ property, onClose, onEnquirySucce
                 </form>
               )}
             </div>
+
+            {user.role === 'ROLE_ADMIN' && property.status === 'ACTIVE' && (
+              <button 
+                onClick={handleDeactivate} 
+                style={{ width: '100%', marginTop: '1rem', background: 'var(--clay)', color: 'var(--white)', border: 'none' }}
+              >
+                Deactivate Listing (Admin)
+              </button>
+            )}
 
             <button 
               className="btn-secondary" 

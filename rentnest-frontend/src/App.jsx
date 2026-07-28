@@ -8,6 +8,7 @@ import Search from './pages/Search.jsx';
 import SavedListings from './pages/SavedListings.jsx';
 import SentEnquiries from './pages/SentEnquiries.jsx';
 import ReceivedEnquiries from './pages/ReceivedEnquiries.jsx';
+import AdminReview from './pages/AdminReview.jsx';
 import { useAuth } from './hooks/useAuth.js';
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
       onGoToSaved: () => setView('SAVED'),
       onGoToSentEnquiries: () => setView('MY_ENQUIRIES'),
       onGoToReceivedEnquiries: () => setView('RECEIVED_ENQUIRIES'),
+      onGoToAdminReview: () => setView('ADMIN_REVIEW'),
     };
 
     if (view === 'DASHBOARD') return <Dashboard {...navProps} />;
@@ -42,6 +44,7 @@ export default function App() {
     if (view === 'SAVED') return <SavedListings {...navProps} />;
     if (view === 'MY_ENQUIRIES') return <SentEnquiries {...navProps} />;
     if (view === 'RECEIVED_ENQUIRIES') return <ReceivedEnquiries {...navProps} />;
+    if (view === 'ADMIN_REVIEW') return <AdminReview {...navProps} />;
 
     // Default: LISTINGS
     return (

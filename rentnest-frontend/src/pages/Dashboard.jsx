@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth.js';
 
 export default function Dashboard({
   onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved,
-  onGoToSentEnquiries, onGoToReceivedEnquiries
+  onGoToSentEnquiries, onGoToReceivedEnquiries, onGoToAdminReview
 }) {
   const { user, logout } = useAuth();
   const [ownerStats, setOwnerStats] = useState(null);
@@ -49,6 +49,9 @@ export default function Dashboard({
           <button style={navBtnStyle} onClick={onGoToSearch}>Search Properties</button>
           <button style={navBtnStyle} onClick={onGoToSaved}>Saved Properties</button>
           <button style={navBtnStyle} onClick={onGoToSentEnquiries}>My Enquiries</button>
+          {user.role === 'ROLE_ADMIN' && (
+            <button style={navBtnStyle} onClick={onGoToAdminReview}>Admin Review</button>
+          )}
           <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
           <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
         </div>

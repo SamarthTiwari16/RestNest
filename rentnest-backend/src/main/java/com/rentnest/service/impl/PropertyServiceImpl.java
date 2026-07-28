@@ -246,6 +246,57 @@ public class PropertyServiceImpl implements PropertyService {
         return propertyRepository.findAll(spec, pageable).map(PropertyResponse::from);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PropertyResponse> getPendingProperties(Pageable pageable) {
+        return propertyRepository.findAllByStatus(PropertyStatus.PENDING_VERIFICATION, pageable)
+                .map(PropertyResponse::from);
+    }
+
+    @Override
+    public PropertyResponse approveProperty(Long id) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found with id: " + id));
+        if (property.getStatus() != PropertyStatus.PENDING_VERIFICATION) {
+            throw new ValidationException("Property is not in PENDING_VERIFICATION status");
+        }
+        property.setStatus(PropertyStatus.ACTIVE);
+        property.setRejectionReason(null);
+        Property saved = propertyRepository.save(property);
+        log.info("Property approved: propertyId={}", saved.getId());
+        return PropertyResponse.from(saved);
+    }
+
+    @Override
+    public PropertyResponse rejectProperty(Long id, String reason) {
+        if (reason == null || reason.trim().isEmpty()) {
+            throw new ValidationException("Rejection reason is required");
+        }
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found with id: " + id));
+        if (property.getStatus() != PropertyStatus.PENDING_VERIFICATION) {
+            throw new ValidationException("Property is not in PENDING_VERIFICATION status");
+        }
+        property.setStatus(PropertyStatus.DRAFT);
+        property.setRejectionReason(reason.trim());
+        Property saved = propertyRepository.save(property);
+        log.info("Property rejected: propertyId={}, reason={}", saved.getId(), reason);
+        return PropertyResponse.from(saved);
+    }
+
+    @Override
+    public PropertyResponse deactivateProperty(Long id) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found with id: " + id));
+        if (property.getStatus() != PropertyStatus.ACTIVE) {
+            throw new ValidationException("Only ACTIVE properties can be deactivated by admin");
+        }
+        property.setStatus(PropertyStatus.ARCHIVED);
+        Property saved = propertyRepository.save(property);
+        log.info("Property deactivated by admin: propertyId={}", saved.getId());
+        return PropertyResponse.from(saved);
+    }
+
     private void verifyOwnership(Property property, String ownerEmail) {
         User user = userRepository.findByEmail(ownerEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + ownerEmail));

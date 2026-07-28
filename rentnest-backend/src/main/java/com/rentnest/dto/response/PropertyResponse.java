@@ -23,7 +23,8 @@ public record PropertyResponse(
         LocalDate availableFrom,
         PropertyStatus status,
         Instant createdAt,
-        List<PropertyImageResponse> images
+        List<PropertyImageResponse> images,
+        String rejectionReason
 ) {
     public record PropertyImageResponse(Long id, String imageUrl, Integer sortOrder) {}
 
@@ -47,7 +48,8 @@ public record PropertyResponse(
                 property.getAvailableFrom(),
                 property.getStatus(),
                 property.getCreatedAt(),
-                imageResponses
+                imageResponses,
+                property.getRejectionReason()
         );
     }
 }
