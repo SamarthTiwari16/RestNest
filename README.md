@@ -321,7 +321,7 @@ rentnest-frontend/
 ### Prerequisites
 
 - Java 21+
-- Node.js 18+
+- Spring Boot 3
 - MySQL 8 running locally
 
 ### 1. Database Setup
@@ -421,7 +421,7 @@ mvn test
 | [`PRD.md`](./PRD.md) | Product requirements, user personas, user stories |
 | [`Phases.md`](./Phases.md) | Phase-by-phase development roadmap |
 | [`Rules.md`](./Rules.md) | Engineering rules and conventions |
-| [`memory.md`](./memory.md) | AI coding assistant context buffer and progress tracker |
+| [`memory.md`](./memory.md) | AI validation assistant context buffer and progress tracker |
 
 ---
 
