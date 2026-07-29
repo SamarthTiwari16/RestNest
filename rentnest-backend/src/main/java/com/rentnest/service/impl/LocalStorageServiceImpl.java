@@ -2,6 +2,8 @@ package com.rentnest.service.impl;
 
 import com.rentnest.exception.ValidationException;
 import com.rentnest.service.ImageStorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,6 +20,8 @@ import java.util.UUID;
 @Service
 public class LocalStorageServiceImpl implements ImageStorageService {
 
+    private static final Logger log = LoggerFactory.getLogger(LocalStorageServiceImpl.class);
+
     private final Path uploadPath;
     private final String uploadDir;
 
@@ -26,7 +30,9 @@ public class LocalStorageServiceImpl implements ImageStorageService {
         this.uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.uploadPath);
+            log.info("Initialized local upload path: {}", this.uploadPath);
         } catch (IOException e) {
+            log.error("Could not create the upload directory: {}", this.uploadPath, e);
             throw new RuntimeException("Could not create the upload directory.", e);
         }
     }
@@ -57,8 +63,11 @@ public class LocalStorageServiceImpl implements ImageStorageService {
         try {
             Path targetLocation = this.uploadPath.resolve(uniqueFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-            return "/uploads/" + uniqueFileName;
+            String url = "/uploads/" + uniqueFileName;
+            log.info("Stored image: originalName={}, uniqueName={}, url={}", originalFilename, uniqueFileName, url);
+            return url;
         } catch (IOException e) {
+            log.error("Failed to store file: {}", uniqueFileName, e);
             throw new RuntimeException("Failed to store file: " + uniqueFileName, e);
         }
     }
@@ -69,10 +78,13 @@ public class LocalStorageServiceImpl implements ImageStorageService {
             String fileName = imageUrl.substring(9); // remove "/uploads/"
             try {
                 Path filePath = this.uploadPath.resolve(fileName).normalize();
-                Files.deleteIfExists(filePath);
+                if (Files.deleteIfExists(filePath)) {
+                    log.info("Deleted image from local storage: {}", fileName);
+                } else {
+                    log.warn("Image file not found for deletion: {}", fileName);
+                }
             } catch (IOException e) {
-                // Log and swallow or handle appropriately
-                System.err.println("Could not delete file: " + fileName + ". Error: " + e.getMessage());
+                log.error("Could not delete file: {}. Error: {}", fileName, e.getMessage(), e);
             }
         }
     }

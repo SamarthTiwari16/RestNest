@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import * as propertyApi from '../api/propertyApi.js';
 import * as favouritesApi from '../api/favouritesApi.js';
 import PropertyDetailsModal from '../components/property/PropertyDetailsModal.jsx';
+import Header from '../components/Header.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 
 export default function Search({ onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries, onGoToAdminReview }) {
@@ -126,69 +127,74 @@ export default function Search({ onGoToDashboard, onGoToListings, onGoToSearch, 
 
   return (
     <div>
-      <header className="navbar">
-        <h1>RentNest</h1>
-        <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button 
-            onClick={onGoToDashboard}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Dashboard
-          </button>
-          <button 
-            onClick={onGoToListings}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            My Listings
-          </button>
-          <button 
-            onClick={onGoToReceivedEnquiries}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Received Enquiries
-          </button>
-          <button 
-            onClick={onGoToSearch}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem', borderBottom: '2px solid var(--parchment)', fontWeight: 'bold' }}
-          >
-            Search Properties
-          </button>
-          <button 
-            onClick={onGoToSaved}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Saved Properties
-          </button>
-          <button 
-            onClick={onGoToSentEnquiries}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            My Enquiries
-          </button>
-          {user.role === 'ROLE_ADMIN' && (
-            <button 
-              onClick={onGoToAdminReview}
-              style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-            >
-              Admin Review
-            </button>
-          )}
-          <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
-          <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
-        </div>
-      </header>
+      <Header
+        activeTab="SEARCH"
+        onGoToDashboard={onGoToDashboard}
+        onGoToListings={onGoToListings}
+        onGoToReceivedEnquiries={onGoToReceivedEnquiries}
+        onGoToSearch={onGoToSearch}
+        onGoToSaved={onGoToSaved}
+        onGoToSentEnquiries={onGoToSentEnquiries}
+        onGoToAdminReview={onGoToAdminReview}
+      />
 
-      <main className="container" style={{ maxWidth: '1200px' }}>
-        <div className="page-title-row" style={{ marginBottom: '2rem' }}>
-          <div>
-            <p className="eyebrow" style={{ margin: 0 }}>Tenant Portal</p>
-            <h1 style={{ marginTop: '0.2rem' }}>Explore Homes</h1>
+      {/* Editorial Ink Hero */}
+      <section style={{ background: 'var(--ink)', color: 'var(--parchment)', padding: '4.5rem 2rem 5.5rem', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ maxWidth: '1120px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem', position: 'relative', zIndex: 2 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem' }}>
+            <div style={{ flex: '1 1 600px' }}>
+              <p className="eyebrow" style={{ color: 'var(--gold-thread)', margin: 0 }}>Tenant Portal</p>
+              <h2 className="text-hero" style={{ margin: '0.5rem 0 1.5rem', color: 'var(--parchment)' }}>
+                Every rental is the start of a chapter.
+              </h2>
+              <p className="text-body" style={{ color: 'var(--parchment)', opacity: 0.8, maxWidth: '480px', margin: 0 }}>
+                A premium, privacy-first portal matching high-quality listings with verified tenants. Discover properties in India's top cities.
+              </p>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: '1 1 200px' }}>
+              <svg className="key-motif" width="140" height="140" viewBox="0 0 100 100" fill="none" stroke="var(--gold-thread)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ overflow: 'visible' }}>
+                <path d="M 35 50 A 15 15 0 1 1 35 50.01 M 35 50 A 5 5 0 1 1 35 50.01 M 50 50 L 85 50 M 70 50 L 70 65 M 80 50 L 80 65" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Quick city search bar low in hero */}
+          <div style={{ marginTop: '2.5rem', maxWidth: '560px' }}>
+            <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.75rem' }}>
+              <div style={{ flex: 1, position: 'relative' }}>
+                <input
+                  type="text"
+                  placeholder="Enter city to explore (e.g. Bangalore, Chennai)..."
+                  value={filters.city}
+                  onChange={(e) => setFormFilter('city', e.target.value)}
+                  style={{
+                    background: 'var(--paper-white)',
+                    border: '1px solid var(--gold-thread)',
+                    borderRadius: '8px',
+                    color: 'var(--ink)',
+                    padding: '0.9rem 1.2rem',
+                    fontSize: '1rem',
+                    boxShadow: '0 0 16px rgba(201, 162, 74, 0.15)',
+                    width: '100%',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+              <button type="submit" style={{ padding: '0 1.75rem', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px' }}>
+                Explore
+              </button>
+            </form>
           </div>
         </div>
 
+        {/* Ambient bottom gradient cut */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '30px', background: 'linear-gradient(to bottom, transparent, var(--parchment))' }} />
+      </section>
+
+      <main className="container" style={{ maxWidth: '1120px', paddingTop: '2.5rem' }}>
         {error && <p className="form-error" role="alert" style={{ marginBottom: '1.5rem' }}>{error}</p>}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '2rem', alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '2.5rem', alignItems: 'start' }}>
           
           {/* Filters Sidebar */}
           <aside className="form-card" style={{ padding: '1.5rem', margin: 0, position: 'sticky', top: '2rem' }}>
@@ -305,9 +311,17 @@ export default function Search({ onGoToDashboard, onGoToListings, onGoToSearch, 
             {loading ? (
               <p style={{ fontSize: '1.2rem', fontStyle: 'italic', color: 'var(--fog)' }}>Searching for properties...</p>
             ) : results.length === 0 ? (
-              <div className="empty-state" style={{ padding: '3rem 1rem' }}>
-                <h3>No homes match your search filters.</h3>
-                <p>Try expanding your city, locality, or budget limits.</p>
+              <div className="empty-state" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
+                <svg width="120" height="120" viewBox="0 0 100 100" fill="none" stroke="var(--gold-thread)" strokeWidth="1.2" opacity="0.6" style={{ margin: '0 auto 1.5rem', display: 'block' }}>
+                  <rect x="10" y="10" width="80" height="80" />
+                  <line x1="10" y1="50" x2="60" y2="50" />
+                  <line x1="50" y1="10" x2="50" y2="90" />
+                  <line x1="50" y1="65" x2="90" y2="65" />
+                  <path d="M 50 35 A 15 15 0 0 1 35 50" strokeDasharray="3,3" />
+                  <path d="M 65 50 A 15 15 0 0 1 50 65" strokeDasharray="3,3" />
+                </svg>
+                <h3 style={{ fontFamily: 'Fraunces, serif', fontSize: '1.5rem', marginBottom: '0.5rem' }}>No homes match your search filters.</h3>
+                <p style={{ color: 'var(--fog)' }}>Try expanding your city, locality, or budget limits.</p>
               </div>
             ) : (
               <div>

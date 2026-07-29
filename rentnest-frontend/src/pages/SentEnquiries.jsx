@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as enquiriesApi from '../api/enquiriesApi.js';
+import Header from '../components/Header.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 
 export default function SentEnquiries({ onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries, onGoToAdminReview }) {
@@ -27,57 +28,16 @@ export default function SentEnquiries({ onGoToDashboard, onGoToListings, onGoToS
 
   return (
     <div>
-      <header className="navbar">
-        <h1>RentNest</h1>
-        <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button 
-            onClick={onGoToDashboard}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Dashboard
-          </button>
-          <button 
-            onClick={onGoToListings}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            My Listings
-          </button>
-          <button 
-            onClick={onGoToReceivedEnquiries}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Received Enquiries
-          </button>
-          <button 
-            onClick={onGoToSearch}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Search Properties
-          </button>
-          <button 
-            onClick={onGoToSaved}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Saved Properties
-          </button>
-          <button 
-            onClick={onGoToSentEnquiries}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem', borderBottom: '2px solid var(--parchment)', fontWeight: 'bold' }}
-          >
-            My Enquiries
-          </button>
-          {user.role === 'ROLE_ADMIN' && (
-            <button 
-              onClick={onGoToAdminReview}
-              style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-            >
-              Admin Review
-            </button>
-          )}
-          <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
-          <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
-        </div>
-      </header>
+      <Header
+        activeTab="MY_ENQUIRIES"
+        onGoToDashboard={onGoToDashboard}
+        onGoToListings={onGoToListings}
+        onGoToReceivedEnquiries={onGoToReceivedEnquiries}
+        onGoToSearch={onGoToSearch}
+        onGoToSaved={onGoToSaved}
+        onGoToSentEnquiries={onGoToSentEnquiries}
+        onGoToAdminReview={onGoToAdminReview}
+      />
 
       <main className="container" style={{ maxWidth: '1000px' }}>
         <div className="page-title-row" style={{ marginBottom: '2rem' }}>

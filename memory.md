@@ -14,7 +14,7 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 ---
 
 ## 2. Current Project Status
-- **Current Phase:** Phase 9 (Completed & Verified)
+- **Current Phase:** Phase 10 (Completed & Verified)
 - **Next Phase:** None (All development phases completed successfully)
 - **Local Databases:** 
   - MySQL database `rentnest` created.
@@ -62,12 +62,25 @@ This file serves as a persistent context buffer for AI coding assistants and dev
 - **Key Actions:** Created V7 database migration adding `rejection_reason` column, seeded default admin `admin@rentnest.com` with role `ROLE_ADMIN` on startup, created `AdminController` with moderation endpoints, implemented custom Spring Security role checks, added full test suites, and built the frontend `AdminReview` queue portal and detail deactivation hooks.
 
 ### Phase 9 — Polish: Validation, Exceptions, Logging, Docs (Completed & Verified)
-- **Goals Met:** End-to-end polish, custom API exception serialization safety, clean OpenAPI Swagger UI documentation, and robust SLF4J logging for critical events.
-- **Key Actions:** Added OpenAPI annotations (`@Tag` and `@Operation`) to DashboardController to organize and label stats endpoints. Added SLF4J logger actions in FavouriteServiceImpl to trace save/unsave properties. Ran automated build checks and validated in-browser Swagger UI correctness.
+- **Goals Met:** Unified global REST exception handler, comprehensive SLF4J logging coverage for file storage events, fully descriptive Swagger UI documentation for all endpoints/DTO fields, and robust service testing.
+- **Key Actions:** Extended `GlobalExceptionHandler` to gracefully format key Spring Security and Web MVC exceptions (e.g. AccessDeniedException, HttpMessageNotReadableException, ConstraintViolationException). Integrated SLF4J logger to `LocalStorageServiceImpl` and replaced raw console printing. Annotated all request and response DTO schemas with `@Schema` details/examples and `/search` parameters with `@Parameter` descriptors. Wrote `LocalStorageServiceImplTest` unit tests and verified all 62 backend tests run and pass successfully.
+
+### Phase 10 — Frontend Design Pass (Completed & Verified)
+- **Goals Met:** Applied the full Ellipsus-inspired editorial design system (Design.md) across every screen.
+- **Key Actions:**
+  - **Typography & Fonts:** Extended `index.css` to import Google Fonts (Fraunces, Inter, Caveat), define global type scale utility classes (`.text-hero`, `.text-h1`, `.text-h2`, `.text-h3`, `.text-body`, `.text-annotation`).
+  - **Animated SVG Key Motif:** Added hand-drawn key SVG in the Search hero section (`key-motif` class) with `stroke-dashoffset` draw animation via `@keyframes draw-line` in index.css.
+  - **Hand-Drawn Signature Circles:** Wrapped the "verified listing" badge and the rent price in `PropertyDetailsModal.jsx` with animating SVG ellipse paths (`signature-circle` class) that draw on load.
+  - **Dark Ink Hero:** Replaced the simple page header in `Search.jsx` with a full-width dark editorial hero section (`background: var(--ink)`) featuring the tagline "Every rental is the start of a chapter.", a subtext, the gold-key SVG motif, and an integrated city search bar with a gold glowing border.
+  - **Nav Underline Animations:** Added `.nav-link-btn` CSS class with a sliding gold `::after` underline on hover and a persistent underline for the `.active` state. All six page navbars were consolidated into a single reusable `Header.jsx` component.
+  - **Empty-State Floor-Plan Watermarks:** Added editorial hand-drawn dashed SVG floor-plan illustrations to empty states in `Search.jsx`, `MyListings.jsx`, and `SavedListings.jsx`.
+  - **Production Build:** Vite build passed with ✓ 101 modules transformed, zero errors.
 
 ---
 
-## 4. Next Phase Details
+## 4. Key Technical Notes
 
-### Phase 10 — Project Launch & Wrap-up (Ready)
-- **Goal:** Hand over the fully polished codebase to the user, ensure all artifacts, walkthroughs, and logs are up to date.
+- **Configuration:** Application settings are in `application.yml` (not `application.properties`).
+- **Admin Login:** Seeded via `DataSeeder.java` on first boot: `admin@rentnest.com` / `AdminPassword123!`.
+- **Test Bypasses:** E2E test mock: `btn-add-mock-image` in ImageUploader.jsx and mock dialog overrides in main.jsx.
+- **CSS Variables:** Defined in `tokens.css` — `--ink`, `--parchment`, `--paper-white`, `--clay`, `--fog`, `--charcoal`, `--sage`, `--gold-thread`, `--border`.

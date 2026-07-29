@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as favouritesApi from '../api/favouritesApi.js';
 import PropertyDetailsModal from '../components/property/PropertyDetailsModal.jsx';
+import Header from '../components/Header.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 
 export default function SavedListings({ onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries, onGoToAdminReview }) {
@@ -41,57 +42,16 @@ export default function SavedListings({ onGoToDashboard, onGoToListings, onGoToS
 
   return (
     <div>
-      <header className="navbar">
-        <h1>RentNest</h1>
-        <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button 
-            onClick={onGoToDashboard}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Dashboard
-          </button>
-          <button 
-            onClick={onGoToListings}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            My Listings
-          </button>
-          <button 
-            onClick={onGoToReceivedEnquiries}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Received Enquiries
-          </button>
-          <button 
-            onClick={onGoToSearch}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Search Properties
-          </button>
-          <button 
-            onClick={onGoToSaved}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem', borderBottom: '2px solid var(--parchment)', fontWeight: 'bold' }}
-          >
-            Saved Properties
-          </button>
-          <button 
-            onClick={onGoToSentEnquiries}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            My Enquiries
-          </button>
-          {user.role === 'ROLE_ADMIN' && (
-            <button 
-              onClick={onGoToAdminReview}
-              style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-            >
-              Admin Review
-            </button>
-          )}
-          <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
-          <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
-        </div>
-      </header>
+      <Header
+        activeTab="SAVED"
+        onGoToDashboard={onGoToDashboard}
+        onGoToListings={onGoToListings}
+        onGoToReceivedEnquiries={onGoToReceivedEnquiries}
+        onGoToSearch={onGoToSearch}
+        onGoToSaved={onGoToSaved}
+        onGoToSentEnquiries={onGoToSentEnquiries}
+        onGoToAdminReview={onGoToAdminReview}
+      />
 
       <main className="container" style={{ maxWidth: '1200px' }}>
         <div className="page-title-row" style={{ marginBottom: '2rem' }}>
@@ -107,6 +67,14 @@ export default function SavedListings({ onGoToDashboard, onGoToListings, onGoToS
           <p style={{ fontSize: '1.2rem', fontStyle: 'italic', color: 'var(--fog)' }}>Loading your saved homes...</p>
         ) : savedListings.length === 0 ? (
           <div className="empty-state" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
+            <svg width="120" height="120" viewBox="0 0 100 100" fill="none" stroke="var(--gold-thread)" strokeWidth="1.2" opacity="0.6" style={{ margin: '0 auto 1.5rem', display: 'block' }}>
+              <rect x="10" y="10" width="80" height="80" />
+              <line x1="10" y1="50" x2="60" y2="50" />
+              <line x1="50" y1="10" x2="50" y2="90" />
+              <line x1="50" y1="65" x2="90" y2="65" />
+              <path d="M 50 35 A 15 15 0 0 1 35 50" strokeDasharray="3,3" />
+              <path d="M 65 50 A 15 15 0 0 1 50 65" strokeDasharray="3,3" />
+            </svg>
             <h3 style={{ fontFamily: 'Fraunces, serif', fontSize: '1.6rem', marginBottom: '0.5rem' }}>Your saved list is empty.</h3>
             <p style={{ color: 'var(--fog)' }}>Browse homes in the explorer tab and click the heart icon to save them here.</p>
             <button style={{ marginTop: '1.5rem' }} onClick={onGoToSearch}>Search Homes</button>

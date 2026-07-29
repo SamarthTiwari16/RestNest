@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as propertyApi from '../api/propertyApi.js';
+import Header from '../components/Header.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 
 export default function MyListings({ onCreateNew, onEdit, onGoToDashboard, onGoToListings, onGoToSearch, onGoToSaved, onGoToSentEnquiries, onGoToReceivedEnquiries, onGoToAdminReview }) {
@@ -48,57 +49,16 @@ export default function MyListings({ onCreateNew, onEdit, onGoToDashboard, onGoT
 
   return (
     <div>
-      <header className="navbar">
-        <h1>RentNest</h1>
-        <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button 
-            onClick={onGoToDashboard}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Dashboard
-          </button>
-          <button 
-            onClick={onGoToListings}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem', borderBottom: '2px solid var(--parchment)', fontWeight: 'bold' }}
-          >
-            My Listings
-          </button>
-          <button 
-            onClick={onGoToReceivedEnquiries}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Received Enquiries
-          </button>
-          <button 
-            onClick={onGoToSearch}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Search Properties
-          </button>
-          <button 
-            onClick={onGoToSaved}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Saved Properties
-          </button>
-          <button 
-            onClick={onGoToSentEnquiries}
-            style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            My Enquiries
-          </button>
-          {user.role === 'ROLE_ADMIN' && (
-            <button 
-              onClick={onGoToAdminReview}
-              style={{ background: 'transparent', border: 'none', color: 'var(--parchment)', cursor: 'pointer', fontSize: '0.9rem' }}
-            >
-              Admin Review
-            </button>
-          )}
-          <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
-          <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
-        </div>
-      </header>
+      <Header
+        activeTab="LISTINGS"
+        onGoToDashboard={onGoToDashboard}
+        onGoToListings={onGoToListings}
+        onGoToReceivedEnquiries={onGoToReceivedEnquiries}
+        onGoToSearch={onGoToSearch}
+        onGoToSaved={onGoToSaved}
+        onGoToSentEnquiries={onGoToSentEnquiries}
+        onGoToAdminReview={onGoToAdminReview}
+      />
 
       <main className="container">
         {error && <p className="form-error" style={{ marginBottom: '1.5rem' }} role="alert">{error}</p>}
@@ -114,9 +74,18 @@ export default function MyListings({ onCreateNew, onEdit, onGoToDashboard, onGoT
         {loading ? (
           <p>Loading your properties...</p>
         ) : listings.length === 0 ? (
-          <div className="empty-state">
-            <p>You haven't created any property listings yet.</p>
-            <button style={{ marginTop: '1rem' }} onClick={onCreateNew}>Create your first draft</button>
+          <div className="empty-state" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
+            <svg width="120" height="120" viewBox="0 0 100 100" fill="none" stroke="var(--gold-thread)" strokeWidth="1.2" opacity="0.6" style={{ margin: '0 auto 1.5rem', display: 'block' }}>
+              <rect x="10" y="10" width="80" height="80" />
+              <line x1="10" y1="50" x2="60" y2="50" />
+              <line x1="50" y1="10" x2="50" y2="90" />
+              <line x1="50" y1="65" x2="90" y2="65" />
+              <path d="M 50 35 A 15 15 0 0 1 35 50" strokeDasharray="3,3" />
+              <path d="M 65 50 A 15 15 0 0 1 50 65" strokeDasharray="3,3" />
+            </svg>
+            <h3 style={{ fontFamily: 'Fraunces, serif', fontSize: '1.5rem', marginBottom: '0.5rem' }}>You haven't listed any properties yet.</h3>
+            <p style={{ color: 'var(--fog)', marginBottom: '1.5rem' }}>Click below to list your first property and find the right tenants.</p>
+            <button onClick={onCreateNew}>List Your First Property</button>
           </div>
         ) : (
           <div className="listing-grid">

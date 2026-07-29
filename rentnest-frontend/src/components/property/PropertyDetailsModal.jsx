@@ -187,13 +187,32 @@ export default function PropertyDetailsModal({ property, onClose, onEnquirySucce
               </div>
             )}
 
-            <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '1.8rem', marginTop: '1.5rem', marginBottom: '0.5rem', color: 'var(--ink)' }}>
+            <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '1.8rem', marginTop: '1.5rem', marginBottom: '0.25rem', color: 'var(--ink)' }}>
               {property.title}
             </h2>
-            <p style={{ margin: '0.2rem 0', fontWeight: '600', color: 'var(--clay)', fontSize: '1.4rem' }}>
-              ₹{property.rent.toLocaleString('en-IN')} / month
-            </p>
-            <p style={{ margin: '0.4rem 0', color: 'var(--charcoal)', fontWeight: 500 }}>
+
+            {/* Verified Badge circled with SVG */}
+            {property.status === 'ACTIVE' && (
+              <div style={{ position: 'relative', display: 'inline-block', margin: '0.4rem 0 0.8rem 0.25rem' }}>
+                <span className="badge badge-active" style={{ position: 'relative', zIndex: 2, fontSize: '0.7rem' }}>✓ verified listing</span>
+                <svg className="signature-circle" viewBox="0 0 120 40" style={{ position: 'absolute', top: '-6px', left: '-5px', width: '130px', height: '46px', pointerEvents: 'none', zIndex: 1 }}>
+                  <path d="M 8 20 C 8 5, 112 5, 112 20 C 112 35, 8 35, 8 20" fill="none" stroke="var(--gold-thread)" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </div>
+            )}
+
+            <div style={{ margin: '0.5rem 0 1rem 0' }}>
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <p style={{ margin: 0, fontWeight: '600', color: 'var(--clay)', fontSize: '1.5rem', position: 'relative', zIndex: 2, padding: '0 0.6rem' }}>
+                  ₹{property.rent.toLocaleString('en-IN')} / month
+                </p>
+                <svg className="signature-circle" viewBox="0 0 200 60" style={{ position: 'absolute', top: '-8px', left: 0, width: '100%', height: '125%', pointerEvents: 'none', zIndex: 1, overflow: 'visible' }}>
+                  <path d="M 12 30 C 12 6, 188 6, 188 30 C 188 54, 12 54, 12 30" fill="none" stroke="var(--gold-thread)" strokeWidth="2.2" strokeLinecap="round" />
+                </svg>
+              </div>
+            </div>
+
+            <p style={{ margin: '0.5rem 0', color: 'var(--charcoal)', fontWeight: 500 }}>
               {property.locality}, {property.city}
             </p>
 

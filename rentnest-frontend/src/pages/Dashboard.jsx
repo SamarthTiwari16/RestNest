@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as dashboardApi from '../api/dashboardApi.js';
+import Header from '../components/Header.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 
 export default function Dashboard({
@@ -31,31 +32,18 @@ export default function Dashboard({
     fetchAll();
   }, []);
 
-  const navBtnStyle = {
-    background: 'transparent', border: 'none', color: 'var(--parchment)',
-    cursor: 'pointer', fontSize: '0.9rem', padding: '0.25rem 0',
-  };
-  const navBtnActive = { ...navBtnStyle, borderBottom: '2px solid var(--parchment)', fontWeight: 700 };
-
   return (
     <div style={{ minHeight: '100vh', background: 'var(--parchment)' }}>
-      {/* Navbar */}
-      <header className="navbar">
-        <h1>RentNest</h1>
-        <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button style={navBtnActive} onClick={onGoToDashboard}>Dashboard</button>
-          <button style={navBtnStyle} onClick={onGoToListings}>My Listings</button>
-          <button style={navBtnStyle} onClick={onGoToReceivedEnquiries}>Received Enquiries</button>
-          <button style={navBtnStyle} onClick={onGoToSearch}>Search Properties</button>
-          <button style={navBtnStyle} onClick={onGoToSaved}>Saved Properties</button>
-          <button style={navBtnStyle} onClick={onGoToSentEnquiries}>My Enquiries</button>
-          {user.role === 'ROLE_ADMIN' && (
-            <button style={navBtnStyle} onClick={onGoToAdminReview}>Admin Review</button>
-          )}
-          <span className="nav-link" style={{ marginLeft: '1rem' }}>Hello, {user.name}</span>
-          <button className="btn-secondary" style={{ color: 'var(--parchment)', borderColor: 'var(--parchment)' }} onClick={logout}>Sign out</button>
-        </div>
-      </header>
+      <Header
+        activeTab="DASHBOARD"
+        onGoToDashboard={onGoToDashboard}
+        onGoToListings={onGoToListings}
+        onGoToReceivedEnquiries={onGoToReceivedEnquiries}
+        onGoToSearch={onGoToSearch}
+        onGoToSaved={onGoToSaved}
+        onGoToSentEnquiries={onGoToSentEnquiries}
+        onGoToAdminReview={onGoToAdminReview}
+      />
 
       <main className="container" style={{ maxWidth: '1200px', paddingTop: '3rem', paddingBottom: '4rem' }}>
         {/* Page header */}

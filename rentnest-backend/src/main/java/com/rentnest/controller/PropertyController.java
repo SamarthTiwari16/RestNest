@@ -5,6 +5,7 @@ import com.rentnest.dto.response.PropertyResponse;
 import com.rentnest.service.PropertyService;
 import com.rentnest.service.ImageStorageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -46,16 +47,27 @@ public class PropertyController {
     @GetMapping("/search")
     @Operation(summary = "Search and filter active property listings with pagination")
     public ResponseEntity<Page<PropertyResponse>> searchProperties(
+            @Parameter(description = "Filter by city", example = "Chennai")
             @RequestParam(required = false) String city,
+            @Parameter(description = "Filter by locality", example = "Velachery")
             @RequestParam(required = false) String locality,
+            @Parameter(description = "Minimum monthly rent limit")
             @RequestParam(required = false) BigDecimal minRent,
+            @Parameter(description = "Maximum monthly rent limit")
             @RequestParam(required = false) BigDecimal maxRent,
+            @Parameter(description = "Filter by BHK configuration count", example = "3")
             @RequestParam(required = false) Integer bhk,
+            @Parameter(description = "Filter by furnishing status")
             @RequestParam(required = false) Boolean furnished,
+            @Parameter(description = "Filter by parking slot availability")
             @RequestParam(required = false) Boolean parking,
+            @Parameter(description = "Filter by pet friendliness status")
             @RequestParam(required = false) Boolean petFriendly,
+            @Parameter(description = "Filter properties available on or before this date (YYYY-MM-DD)", example = "2026-08-01")
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate availableFrom,
+            @Parameter(description = "Filter by property type (APARTMENT, VILLA, STUDIO, INDEPENDENT_HOUSE)", example = "APARTMENT")
             @RequestParam(required = false) String propertyType,
+            @Parameter(description = "Pagination configuration details (page, size, sort)")
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<PropertyResponse> response = propertyService.searchProperties(
